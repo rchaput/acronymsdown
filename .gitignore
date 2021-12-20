@@ -1,0 +1,8 @@
+# R / RStudio files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Package tarball
+acronymsdown_*.tar.gz
