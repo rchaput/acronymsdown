@@ -103,6 +103,7 @@ acronyms:
   insert_beginning: true
   id_prefix: "acronyms_"
   sorting: "alphabetical"
+  inexisting_keys: "warn"
   keys:
     - shortname: RL
       longname: Reinforcement Learning
@@ -139,6 +140,11 @@ acronyms:
     the *RL* acronym appears before the *MORL* one.
     *Warning*: if this sorting is used, the `include_unused` option **MUST**
     be set to `false`! Otherwise, **acronymsdown** will raise an error.
+* `inexisting_keys`: Controls what to do when an acronym key is not found.
+  - `warn`: (default) A descriptive warning is printed, and the acronym
+    is replaced by the key.
+  - `ignore`: The acronym is simply replaced by the key.
+  - `error`: A descriptive error is raised, and the parsing stops.
 
 On the notion of *key*: in the previous example, notice that the *MORL* 
 acronym has an additional `key` field. If explicitly set, **acronymsdown**

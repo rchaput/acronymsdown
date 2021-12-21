@@ -1,11 +1,11 @@
 --[[
     Parses acronyms in a document.
-    
+
     Acronyms must be in the form `\acr{key}` where key is the acronym key.
     The first occurrence of an acronym is replaced by its long name, as
     defined by a list of acronyms in the document's metadata.
     Other occurrences are simply replaced by the acronym's short name.
-    
+
     A List of Acronym is also generated (similar to a Glossary in LaTeX),
     and all occurrences contain a link to the acronym's definition in this
     List.
@@ -16,10 +16,10 @@ local options = {}
 
 --[[
 The "acronyms" table: contains the list of known acronyms.
-Each acronym is indexed by its key, and must contain: 
-- a shortname, 
-- a longname, 
-- a number of occurrences (initialized to 0), 
+Each acronym is indexed by its key, and must contain:
+- a shortname,
+- a longname,
+- a number of occurrences (initialized to 0),
 - an initial order (the order in which they are defined in the metadata),
 - an usage order (the order in which they are used in the document).
 This table is populated by acronyms in the metadata.
@@ -36,7 +36,7 @@ local current_order = 0
 
 -- A helper function to print warnings
 function warn(msg)
-   io.stderr:write("[WARNING][parse-acronyms] " .. msg .. "\n") 
+   io.stderr:write("[WARNING][acronymsdown] " .. msg .. "\n")
 end
 
 
@@ -54,7 +54,7 @@ end
 function Meta(m)
     parseOptionsFromMetadata(m)
     parseAcronymsFromMetadata(m)
-    
+
     return nil
 end
 
@@ -65,29 +65,33 @@ Absent options are replaced by a default value.
 --]]
 function parseOptionsFromMetadata(m)
     options = m.acronyms or {}
-    
+
     if options["id_prefix"] == nil then
         options["id_prefix"] = "acronyms_"
     else
         options["id_prefix"] = pandoc.utils.stringify(options["id_prefix"])
     end
-    
+
     if options["sorting"] == nil then
         options["sorting"] = "alphabetical"
     else
         options["sorting"] = pandoc.utils.stringify(options["sorting"])
     end
-    
+
     if options["loa_title"] == nil then
         options["loa_title"] = pandoc.MetaInlines(pandoc.Str("List Of Acronyms"))
     end
-    
+
     if options["include_unused"] == nil then
         options["include_unused"] = true
     end
-    
+
     if options["insert_beginning"] == nil then
         options["insert_beginning"] = true
+    end
+
+    if options["inexisting_keys"] == nil then
+        options["inexisting_keys"] = "warn"
     end
 end
 
@@ -103,7 +107,7 @@ function parseAcronymsFromMetadata(m)
     -- filter to remain dependency-free so that all users can use it,
     -- regardless of their installation.
     if not (m.acronyms and m.acronyms.keys and m.acronyms.keys.t == "MetaList") then
-       warn("The 'acronyms' field in the Metadata is absent or malformed")
+       warn("The 'acronyms.keys' field in the Metadata is absent or malformed")
        return nil
     end
     -- We have a list of acronyms directly in the metadata (YAML)
@@ -145,7 +149,7 @@ function sortAcronyms(acronyms, criteria)
     end
     -- Sort the keys according to the criteria and data in acronyms
     if criteria == "alphabetical" then
-        table.sort(keys, 
+        table.sort(keys,
             function (a,b) return acronyms[a]["shortname"] < acronyms[b]["shortname"] end)
     elseif criteria == "usage" then
         if options["include_unused"] then
@@ -169,10 +173,10 @@ Returns 2 values: the Header, and the DefinitionList.
 --]]
 function generateLoA()
     -- Original idea from https://gist.github.com/RLesur/e81358c11031d06e40b8fef9fdfb2682
-    
+
     -- We first get the list of sorted keys, according to the defined criteria.
     local keys = sortAcronyms(acronyms, options["sorting"])
-    
+
     -- Create the table that represents the DefinitionList
     local definition_list = {}
     for i, key in ipairs(keys) do
@@ -183,14 +187,14 @@ function generateLoA()
         local definition = pandoc.Plain(acronyms[key]["longname"])
         table.insert(definition_list, { name, definition })
     end
-    
+
     -- Create the Header
     local loa_classes = {"loa"}
     local header = pandoc.Header(1,
         { table.unpack(options["loa_title"]) },
-        pandoc.Attr("LOA", loa_classes, {})
+        pandoc.Attr(key_to_id("HEADER_LOA"), loa_classes, {})
     )
-    
+
     return header, pandoc.DefinitionList(definition_list)
 end
 
@@ -203,7 +207,7 @@ function appendLoA(doc)
     if not options["insert_beginning"] then
         return nil
     end
-    
+
     local header, definition_list = generateLoA()
 
     -- Insert the DefinitionList
@@ -236,34 +240,59 @@ function RawBlock(el)
     }
 end
 
+--[[
+Replace an acronym `\acr{KEY}`, where KEY is not in the `acronyms` table.
+According to the options, we can either:
+- ignore, and return simply the KEY as text
+- print a warning, and return simply the KEY as text
+- raise an error
+--]]
+function replaceInexistingAcronym(acr_key)
+    if options["inexisting_keys"] == "ignore" then
+        return pandoc.Str(acr_key)
+    elseif options["inexisting_keys"] == "warn" then
+        warn("Acronym key " .. key .. " not recognized, ignoring...")
+        return pandoc.Str(acr_key)
+    elseif options["inexisting_keys"] == "error" then
+        error("Acronym key " .. key .. " not recognized, stopping!")
+    else
+        error("Unrecognized option inexisting_keys=" .. options["inexisting_keys"])
+    end
+end
+
+--[[
+Replace an acronym `\acr{KEY}`, where KEY is recognized in the `acronyms` table.
+--]]
+function replaceExistingAcronym(acr_key)
+    acronyms[acr_key]["occurrences"] = acronyms[acr_key]["occurrences"] + 1
+    if acronyms[acr_key]["occurrences"] > 1 then
+        -- This acr_key already appeared at least once.
+        -- We therefore display only the acronym.
+        return pandoc.Link(acronyms[acr_key]["shortname"],
+            key_to_link(acr_key))
+    else
+        -- This acr_key never appeared!
+        -- We display the full name + the acronym between parenthesis
+        current_order = current_order + 1
+        acronyms[acr_key]["usage_order"] = current_order
+        return pandoc.Link(acronyms[acr_key]["longname"] .. " (" .. acronyms[acr_key]["shortname"] .. ")",
+            key_to_link(acr_key))
+    end
+end
 
 --[[
 Replace each `\acr{KEY}` with the correct text and link to the list of acronyms.
 --]]
-function RawInline(el)
+function replaceAcronym(el)
     local acr_key = string.match(el.text, "\\acr{(.+)}")
     if acr_key then
         -- This is an acronym, we need to parse it.
         if acronyms[acr_key] == nil then
-            -- The acronym does not exist in the table.
-            warn("Acronym key " .. acr_key .. " not recognized! Ignoring this acronym...")
-            -- We simply return the key as text.
-            return pandoc.Str(acr_key)
-        end
-        -- The acronym exists (and is recognized)
-        acronyms[acr_key]["occurrences"] = acronyms[acr_key]["occurrences"] + 1
-        if acronyms[acr_key]["occurrences"] > 1 then
-            -- This acr_key already appeared at least once.
-            -- We therefore display only the acronym.
-            return pandoc.Link(acronyms[acr_key]["shortname"], 
-                key_to_link(acr_key))
+            -- The acronym does not exists
+            return replaceInexistingAcronym(acr_key)
         else
-            -- This acr_key never appeared!
-            -- We display the full name + the acronym between parenthesis
-            current_order = current_order + 1
-            acronyms[acr_key]["usage_order"] = current_order
-            return pandoc.Link(acronyms[acr_key]["longname"] .. " (" .. acronyms[acr_key]["shortname"] .. ")", 
-                key_to_link(acr_key))
+            -- The acronym exists (and is recognized)
+            return replaceExistingAcronym(acr_key)
         end
     else
         -- This is not an acronym, return nil to leave it unchanged.
@@ -273,9 +302,11 @@ end
 
 -- Force the execution of the Meta filter before the RawInline
 -- (we need to load the acronyms first!)
+-- RawBlock and Doc happen after RawInline so that the actual usage order
+-- of acronyms is known (and we can sort the List of Acronyms accordingly)
 return {
     { Meta = Meta },
-    { RawInline = RawInline },
+    { RawInline = replaceAcronym },
     { RawBlock = RawBlock },
     { Doc = appendLoA },
 }
