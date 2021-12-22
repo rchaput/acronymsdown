@@ -12,3 +12,8 @@ doc:
 
 install:
 	R -q -e "library(devtools); install()"
+
+tests:
+	cd tests/ && Rscript testthat.R
+
+.PHONY: tests

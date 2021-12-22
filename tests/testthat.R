@@ -35,3 +35,11 @@ test_dir <- function(dirname) {
 testthat::test_that("01-simple", {
     test_dir("01-simple")
 })
+
+testthat::test_that("02-custom-title", {
+    test_dir("02-custom-title")
+})
+
+testthat::test_that("03-no-title", {
+    test_dir("03-no-title")
+})

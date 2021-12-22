@@ -1,4 +1,4 @@
-# List Of Acronyms {#acronyms_HEADER_LOA .loa}
+# Glossary {#acronyms_HEADER_LOA .loa}
 
 [RL]{#acronyms_RL}
 :   Reinforcement Learning
