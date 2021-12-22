@@ -115,6 +115,9 @@ acronyms:
 
 * `loa_title`: Set the title of the generated List of Acronyms. 
   By default, it is set to "List of Acronyms".
+  - If `loa_title` is set to `""` (the empty string), the title is
+    disabled. The List of Acronyms will still be generated, but without
+    a preceding header.
 * `include_unused`: Whether unused acronyms should be included in the 
   generated List. Acronyms are considered unused if they are defined in 
   the `acronyms.keys` field, but their key does not appear in a single 

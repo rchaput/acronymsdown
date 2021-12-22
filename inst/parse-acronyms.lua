@@ -80,6 +80,11 @@ function parseOptionsFromMetadata(m)
 
     if options["loa_title"] == nil then
         options["loa_title"] = pandoc.MetaInlines(pandoc.Str("List Of Acronyms"))
+    elseif pandoc.utils.stringify(options["loa_title"]) == "" then
+        -- It seems that writing `loa_title: ""` in the YAML returns `{}`
+        -- (an empty table). `pandoc.utils.stringify({})` returns `""` as well.
+        -- This value indicates that the user does not want a Header.
+        options["loa_title"] = ""
     end
 
     if options["include_unused"] == nil then
@@ -188,12 +193,15 @@ function generateLoA()
         table.insert(definition_list, { name, definition })
     end
 
-    -- Create the Header
-    local loa_classes = {"loa"}
-    local header = pandoc.Header(1,
-        { table.unpack(options["loa_title"]) },
-        pandoc.Attr(key_to_id("HEADER_LOA"), loa_classes, {})
-    )
+    -- Create the Header (only if the title is not empty)
+    local header = nil
+    if options["loa_title"] ~= "" then
+        local loa_classes = {"loa"}
+        header = pandoc.Header(1,
+            { table.unpack(options["loa_title"]) },
+            pandoc.Attr(key_to_id("HEADER_LOA"), loa_classes, {})
+        )
+    end
 
     return header, pandoc.DefinitionList(definition_list)
 end
@@ -214,7 +222,9 @@ function appendLoA(doc)
     table.insert(doc.blocks, 1, definition_list)
 
     -- Insert the Header
-    table.insert(doc.blocks, 1, header)
+    if header ~= nil then
+        table.insert(doc.blocks, 1, header)
+    end
 
     return pandoc.Pandoc(doc.blocks, doc.meta)
 end
@@ -234,10 +244,11 @@ function RawBlock(el)
 
     local header, definition_list = generateLoA()
 
-    return {
-        header,
-        definition_list,
-    }
+    if header ~= nil then
+        return { header, definition_list }
+    else
+        return definition_list
+    end
 end
 
 --[[
