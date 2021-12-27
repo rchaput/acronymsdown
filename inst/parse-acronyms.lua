@@ -98,6 +98,60 @@ function parseOptionsFromMetadata(m)
     if options["inexisting_keys"] == nil then
         options["inexisting_keys"] = "warn"
     end
+
+    if options["on_duplicate"] == nil then
+        options["on_duplicate"] = "warn"
+    else
+        options["on_duplicate"] = pandoc.utils.stringify(options["on_duplicate"])
+    end
+
+end
+
+
+--[[
+Helper function to create an acronym in the table.
+--]]
+function addAcronym(key, shortname, longname, initial_order)
+    -- Transform shortname and longname into strings
+    assert(shortname ~= nil, "shortname should not be nil")
+    shortname = pandoc.utils.stringify(shortname)
+    assert(longname ~= nil, "longname should not be nil")
+    longname = pandoc.utils.stringify(longname)
+
+    -- Set key to shortname if undefined, else transform to string
+    if key ~= nil then
+        key = pandoc.utils.stringify(key)
+    else
+        key = shortname
+    end
+
+    -- Handle duplicates
+    if acronyms[key] ~= nil then
+        if options["on_duplicate"] == "replace" then
+            -- Do nothing, let us replace the previous acronym
+        elseif options["on_duplicate"] == "keep" then
+            -- Do nothing, but do not replace: we return here.
+            return
+        elseif options["on_duplicate"] == "warn" then
+            -- Warn, do not replace
+            warn("Duplicate key: " .. key)
+            return
+        elseif options["on_duplicate"] == "error" then
+            -- Stop execution
+            error("Duplicate key: " .. key)
+        else
+            error("Unrecognized option on_duplicate = " .. options["on_duplicate"])
+        end
+    end
+
+    -- Add the acronym to the table
+    acronyms[key] = {
+        shortname = shortname,
+        longname = longname,
+        occurrences = 0,
+        initial_order = initial_order,
+        usage_order = nil,
+    }
 end
 
 
@@ -119,19 +173,12 @@ function parseAcronymsFromMetadata(m)
     -- Iterate over the acronyms and populate the local acronyms table
     for k, v in ipairs(m.acronyms.keys) do
         if v.t == "MetaMap" then
-            local key = v["key"]
-            local shortname = pandoc.utils.stringify(v["shortname"])
-            local longname = pandoc.utils.stringify(v["longname"])
-            -- Key is optional. If not present, we use the shortname.
-            if key then key = pandoc.utils.stringify(key)
-            else key = shortname end
-            acronyms[key] = {
-                shortname = shortname,
-                longname = longname,
-                occurrences = 0,
-                initial_order = k,
-                usage_order = nil,
-            }
+            addAcronym(
+                v["key"],
+                v["shortname"],
+                v["longname"],
+                k
+            )
         end
     end
 end

@@ -24,6 +24,12 @@ the List of Acronyms, so that readers can access the definition in one click.
     + Following occurrences are simply replaced by *short name*.
     + All occurrences are also linked to the acronym's definition in
     the List of Acronyms.
+- Extensive configuration
+    + Most of this package's mechanisms can be configured: how to handle
+    duplicate keys, whether to raise an error, print a warning or ignore an
+    non-existing key, how to sort, ...
+    + Sane defaults are included, such that this package can be used
+    out-of-the-box.
 
 ## Installation
 
@@ -148,6 +154,12 @@ acronyms:
     is replaced by the key.
   - `ignore`: The acronym is simply replaced by the key.
   - `error`: A descriptive error is raised, and the parsing stops.
+* `on_duplicate`: Controls what to do when two acronyms with the same key
+  are defined.
+  - `warn`: (default) A warning is issued, and the first defined acronym is kept.
+  - `replace`: The first acronym is replaced by the new one (no warning).
+  - `keep`: The first acronym is kept (no warning).
+  - `error`: The program raises a descriptive error, and stops.
 
 On the notion of *key*: in the previous example, notice that the *MORL* 
 acronym has an additional `key` field. If explicitly set, **acronymsdown**
