@@ -20,7 +20,7 @@ test_dir <- function(dirname) {
     expected_path <- file.path(getwd(), dirname, "expected.md")
 
     rmarkdown::render(input_path,
-                      output_format = "md_document",
+                      # output_format = "md_document",
                       output_file = out_path,
                       # output_options=c("md_document.variant" = "markdown")
     )
@@ -42,4 +42,12 @@ testthat::test_that("02-custom-title", {
 
 testthat::test_that("03-no-title", {
     test_dir("03-no-title")
+})
+
+testthat::test_that("04-replace-duplicates", {
+    test_dir("04-replace-duplicates")
+})
+
+testthat::test_that("05-keep-duplicates", {
+    test_dir("05-keep-duplicates")
 })
