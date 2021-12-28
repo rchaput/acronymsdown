@@ -1,5 +1,5 @@
 --[[
-    Parses acronyms in a document.
+    Lua Filter to parse acronyms in a Markdown document.
 
     Acronyms must be in the form `\acr{key}` where key is the acronym key.
     The first occurrence of an acronym is replaced by its long name, as
@@ -11,20 +11,20 @@
     List.
 ]]
 
+-- We want to require the Lua files which are in the same folder.
+-- However, as we are invoking this file through Pandoc (and potentially
+-- RMarkdown), we do not have control over the `LUA_PATH` environment variable,
+-- nor the current working directory.
+-- It seems to me that we need to add this current file's directory
+-- to the list of searched directories, i.e., `package.path`.
+local current_dir = debug.getinfo(1).source:match("@?(.*/)")
+package.path = package.path .. ";" .. current_dir .. "/?.lua"
+
+-- The Acronyms database
+require("acronyms")
+
 -- The options for the List Of Acronyms, as defined in the document's metadata.
 local options = {}
-
---[[
-The "acronyms" table: contains the list of known acronyms.
-Each acronym is indexed by its key, and must contain:
-- a shortname,
-- a longname,
-- a number of occurrences (initialized to 0),
-- an initial order (the order in which they are defined in the metadata),
-- an usage order (the order in which they are used in the document).
-This table is populated by acronyms in the metadata.
---]]
-local acronyms = {}
 
 --[[
 The current "usage order" value.
@@ -109,53 +109,6 @@ end
 
 
 --[[
-Helper function to create an acronym in the table.
---]]
-function addAcronym(key, shortname, longname, initial_order)
-    -- Transform shortname and longname into strings
-    assert(shortname ~= nil, "shortname should not be nil")
-    shortname = pandoc.utils.stringify(shortname)
-    assert(longname ~= nil, "longname should not be nil")
-    longname = pandoc.utils.stringify(longname)
-
-    -- Set key to shortname if undefined, else transform to string
-    if key ~= nil then
-        key = pandoc.utils.stringify(key)
-    else
-        key = shortname
-    end
-
-    -- Handle duplicates
-    if acronyms[key] ~= nil then
-        if options["on_duplicate"] == "replace" then
-            -- Do nothing, let us replace the previous acronym
-        elseif options["on_duplicate"] == "keep" then
-            -- Do nothing, but do not replace: we return here.
-            return
-        elseif options["on_duplicate"] == "warn" then
-            -- Warn, do not replace
-            warn("Duplicate key: " .. key)
-            return
-        elseif options["on_duplicate"] == "error" then
-            -- Stop execution
-            error("Duplicate key: " .. key)
-        else
-            error("Unrecognized option on_duplicate = " .. options["on_duplicate"])
-        end
-    end
-
-    -- Add the acronym to the table
-    acronyms[key] = {
-        shortname = shortname,
-        longname = longname,
-        occurrences = 0,
-        initial_order = initial_order,
-        usage_order = nil,
-    }
-end
-
-
---[[
 Populates the `acronyms` table by walking over the Metadata.
 --]]
 function parseAcronymsFromMetadata(m)
@@ -173,12 +126,17 @@ function parseAcronymsFromMetadata(m)
     -- Iterate over the acronyms and populate the local acronyms table
     for k, v in ipairs(m.acronyms.keys) do
         if v.t == "MetaMap" then
-            addAcronym(
-                v["key"],
-                v["shortname"],
-                v["longname"],
-                k
-            )
+            -- Remember that each of these values can be nil!
+            -- By using `and`, we make sure that `stringify` is applied on non-nil.
+            local key = v["key"] and pandoc.utils.stringify(v["key"])
+            local shortname = v["shortname"] and pandoc.utils.stringify(v["shortname"])
+            local longname = v["longname"] and pandoc.utils.stringify(v["longname"])
+            local acronym = Acronym:new{
+                key = key,
+                shortname = shortname,
+                longname = longname,
+            }
+            Acronyms:add(acronym, options["on_duplicate"])
         end
     end
 end
@@ -202,16 +160,16 @@ function sortAcronyms(acronyms, criteria)
     -- Sort the keys according to the criteria and data in acronyms
     if criteria == "alphabetical" then
         table.sort(keys,
-            function (a,b) return acronyms[a]["shortname"] < acronyms[b]["shortname"] end)
+            function (a,b) return Acronyms:get(a).shortname < Acronyms:get(b).shortname end)
     elseif criteria == "usage" then
         if options["include_unused"] then
             error("When the 'usage' sorting is used, 'include_unused' must be set to false!")
         end
         table.sort(keys,
-            function (a,b) return acronyms[a]["usage_order"] < acronyms[b]["usage_order"] end)
+            function (a,b) return Acronyms:get(a).usage_order < Acronyms:get(b).usage_order end)
     elseif criteria == "initial" then
         table.sort(keys,
-            function (a,b) return acronyms[a]["initial_order"] < acronyms[b]["initial_order"] end)
+            function (a,b) return Acronyms:get(a).initial_order < Acronyms:get(b).initial_order end)
     else
         warn("Sorting criteria unrecognized: " .. criteria)
     end
@@ -227,16 +185,16 @@ function generateLoA()
     -- Original idea from https://gist.github.com/RLesur/e81358c11031d06e40b8fef9fdfb2682
 
     -- We first get the list of sorted keys, according to the defined criteria.
-    local keys = sortAcronyms(acronyms, options["sorting"])
+    local keys = sortAcronyms(Acronyms.acronyms, options["sorting"])
 
     -- Create the table that represents the DefinitionList
     local definition_list = {}
     for i, key in ipairs(keys) do
         -- The definition's name. A Span with an ID so we can create a link.
-        local name = pandoc.Span(acronyms[key]["shortname"],
+        local name = pandoc.Span(Acronyms:get(key).shortname,
             pandoc.Attr(key_to_id(key), {}, {}))
         -- The definition's value.
-        local definition = pandoc.Plain(acronyms[key]["longname"])
+        local definition = pandoc.Plain(Acronyms:get(key).longname)
         table.insert(definition_list, { name, definition })
     end
 
@@ -322,18 +280,20 @@ end
 Replace an acronym `\acr{KEY}`, where KEY is recognized in the `acronyms` table.
 --]]
 function replaceExistingAcronym(acr_key)
-    acronyms[acr_key]["occurrences"] = acronyms[acr_key]["occurrences"] + 1
-    if acronyms[acr_key]["occurrences"] > 1 then
+    local acronym = Acronyms:get(acr_key)
+    acronym:incrementOccurrences()
+    if acronym:isFirstUse() then
+        -- This acronym never appeared!
+        -- We first set its usage order
+        current_order = current_order + 1
+        acronym.usage_order = current_order
+        -- We display the full name + the acronym between parenthesis
+        local text = acronym.longname .. " (" .. acronym.shortname .. ")"
+        return pandoc.Link(text, key_to_link(acr_key))
+    else
         -- This acr_key already appeared at least once.
         -- We therefore display only the acronym.
-        return pandoc.Link(acronyms[acr_key]["shortname"],
-            key_to_link(acr_key))
-    else
-        -- This acr_key never appeared!
-        -- We display the full name + the acronym between parenthesis
-        current_order = current_order + 1
-        acronyms[acr_key]["usage_order"] = current_order
-        return pandoc.Link(acronyms[acr_key]["longname"] .. " (" .. acronyms[acr_key]["shortname"] .. ")",
+        return pandoc.Link(acronym.shortname,
             key_to_link(acr_key))
     end
 end
@@ -345,12 +305,12 @@ function replaceAcronym(el)
     local acr_key = string.match(el.text, "\\acr{(.+)}")
     if acr_key then
         -- This is an acronym, we need to parse it.
-        if acronyms[acr_key] == nil then
-            -- The acronym does not exists
-            return replaceInexistingAcronym(acr_key)
-        else
+        if Acronyms:contains(acr_key) then
             -- The acronym exists (and is recognized)
             return replaceExistingAcronym(acr_key)
+        else
+            -- The acronym does not exists
+            return replaceInexistingAcronym(acr_key)
         end
     else
         -- This is not an acronym, return nil to leave it unchanged.
