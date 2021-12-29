@@ -205,14 +205,16 @@ pandoc --lua-filter /path/to/parse-acronyms.lua input.md
 ```
 where `/path/to/parse-acronyms.lua` is the path to the 
 [parse-acronyms.lua](inst/parse-acronyms.lua) script.
+
 If the **acronymsdown** package is installed, you can use the R method
 `system.file("parse-acronyms.lua", package = "acronymsdown")` to get the
 path to this file on your system.
-Or, more simply, download this file from GitHub and store it in a
-convenient location on your system, e.g.,
-```sh
-curl -o /opt/parse-acronyms.lua https://raw.githubusercontent.com/rchaput/acronymsdown/master/inst/parse-acronyms.lua
-```
+
+You can also download the Lua files (in the [inst/](inst/) folder) directly, 
+and store them in a convenient location on your system.
+Note: you must download *all* Lua files and store them in the same folder!
+Otherwise, Lua will raise an error. The "main" script, which must be loaded
+by Pandoc, is `parse-acronyms.lua`.
 
 ## Credits
 
