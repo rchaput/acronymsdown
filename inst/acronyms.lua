@@ -78,15 +78,18 @@ Acronyms = {
     current_definition_order = 0,
 }
 
+
 -- Get the Acronym with the given key, or nil if not found.
 function Acronyms:get(key)
     return self.acronyms[key]
 end
 
+
 -- Does the table contains the given key?
 function Acronyms:contains(key)
     return self:get(key) ~= nil
 end
+
 
 -- Add a new acronym to the table. Also handles duplicates.
 function Acronyms:add(acronym, on_duplicate)
@@ -117,4 +120,57 @@ function Acronyms:add(acronym, on_duplicate)
     self.current_definition_order = self.current_definition_order + 1
     acronym.definition_order = self.current_definition_order
     self.acronyms[acronym.key] = acronym
+end
+
+
+-- Populate the Acronyms database from a YAML metadata
+function Acronyms:parseFromMetadata(metadata, on_duplicate)
+    -- We expect the acronyms to be in the `metadata.acronyms.keys` field.
+    -- This field should be a Pandoc "MetaList" (so we can iter over it).
+    if not (metadata and metadata.acronyms and metadata.acronyms.keys
+        and metadata.acronyms.keys.t == "MetaList") then
+        return
+    end
+    
+    -- Iterate over the defined acronyms. We use `ipairs` since we want to
+    -- keep their original order (useful for the `definition_order`!).
+    for _, v in ipairs(metadata.acronyms.keys) do
+        -- Remember that each of these values can be nil!
+        -- By using `and`, we make sure that `stringify` is applied on non-nil.
+        local key = v.key and pandoc.utils.stringify(v.key)
+        local shortname = v.shortname and pandoc.utils.stringify(v.shortname)
+        local longname = v.longname and pandoc.utils.stringify(v.longname)
+        local acronym = Acronym:new{
+            key = key,
+            shortname = shortname,
+            longname = longname,
+        }
+        Acronyms:add(acronym, on_duplicate)
+    end
+end
+
+
+-- Populate the Acronyms database from a YAML file
+-- Inspired from https://github.com/dsanson/pandoc-abbreviations.lua/
+function Acronyms:parseFromYamlFile(filepath, on_duplicate)
+    assert(filepath ~= nil,
+        "filepath must not be nil!")
+
+    -- First, read the file's content.
+    local file = io.open(filepath, "r")
+    if file == nil then
+        warn("File " .. filepath .. " could not be read! (does not exist?)")
+        return
+    end
+    local content = file:read("*a")
+    file:close()
+
+    -- Secondly, use Pandoc's read ability to parse the content.
+    -- Pandoc does not know how to read YAML, so we'll trick it by
+    -- asking to parse Markdown instead (since the Markdown's metadata
+    -- is YAML anyway).
+    local metadata = pandoc.read(content, "markdown").meta
+
+    -- Finally, read the metadata as usual.
+    self:parseFromMetadata(metadata, on_duplicate)
 end

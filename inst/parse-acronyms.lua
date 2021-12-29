@@ -56,7 +56,24 @@ end
 
 function Meta(m)
     parseOptionsFromMetadata(m)
-    parseAcronymsFromMetadata(m)
+
+    -- Parse acronyms directly from the metadata (`acronyms.keys`)
+    Acronyms:parseFromMetadata(m, options["on_duplicate"])
+
+    -- Parse acronyms from external files
+    if (m and m.acronyms and m.acronyms.fromfile) then
+        if m.acronyms.fromfile.t == "MetaList" then
+            -- We have several files to read
+            for _, filepath in ipairs(m.acronyms.fromfile) do
+                filepath = pandoc.utils.stringify(filepath)
+                Acronyms:parseFromYamlFile(filepath, options["on_duplicate"])
+            end
+        else
+            -- We have a single file
+            local filepath = pandoc.utils.stringify(m.acronyms.fromfile)
+            Acronyms:parseFromYamlFile(filepath, options["on_duplicate"])
+        end
+    end
 
     return nil
 end
@@ -108,40 +125,6 @@ function parseOptionsFromMetadata(m)
         options["on_duplicate"] = pandoc.utils.stringify(options["on_duplicate"])
     end
 
-end
-
-
---[[
-Populates the `acronyms` table by walking over the Metadata.
---]]
-function parseAcronymsFromMetadata(m)
-    -- For now, we expect the metadata to contain an `acronyms.keys` field which
-    -- is a list of maps. We could also provide a path to a file and read
-    -- the acronyms from this file ; however, JSON parsing in Lua is more
-    -- complex. Using a library such as luajson is safer, but I prefer this
-    -- filter to remain dependency-free so that all users can use it,
-    -- regardless of their installation.
-    if not (m.acronyms and m.acronyms.keys and m.acronyms.keys.t == "MetaList") then
-       warn("The 'acronyms.keys' field in the Metadata is absent or malformed")
-       return nil
-    end
-    -- We have a list of acronyms directly in the metadata (YAML)
-    -- Iterate over the acronyms and populate the local acronyms table
-    for k, v in ipairs(m.acronyms.keys) do
-        if v.t == "MetaMap" then
-            -- Remember that each of these values can be nil!
-            -- By using `and`, we make sure that `stringify` is applied on non-nil.
-            local key = v["key"] and pandoc.utils.stringify(v["key"])
-            local shortname = v["shortname"] and pandoc.utils.stringify(v["shortname"])
-            local longname = v["longname"] and pandoc.utils.stringify(v["longname"])
-            local acronym = Acronym:new{
-                key = key,
-                shortname = shortname,
-                longname = longname,
-            }
-            Acronyms:add(acronym, options["on_duplicate"])
-        end
-    end
 end
 
 
