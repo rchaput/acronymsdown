@@ -23,6 +23,9 @@ package.path = package.path .. ";" .. current_dir .. "/?.lua"
 -- The Acronyms database
 require("acronyms")
 
+-- Sorting function
+local sortAcronyms = require("sort_acronyms")
+
 -- The options for the List Of Acronyms, as defined in the document's metadata.
 local options = {}
 
@@ -143,58 +146,23 @@ end
 
 
 --[[
-Sort the acronyms table, based on a criteria. The criteria can be:
-- alphabetical: sort acronyms by alphabetical order (using their shortname).
-- usage: sort acronyms by the order in which they are used.
-- initial: keep acronyms in the order they were defined.
---]]
-function sortAcronyms(acronyms, criteria)
-    -- I think we need to create a new table, indexed by ints
-    -- so we can sort the keys themselves (and use `ipairs` on it)
-    local keys = {}
-    for k, v in pairs(acronyms) do
-        if options["include_unused"] or v["usage_order"] ~= nil then
-            table.insert(keys, k)
-        end
-    end
-    -- Sort the keys according to the criteria and data in acronyms
-    if criteria == "alphabetical" then
-        table.sort(keys,
-            function (a,b) return Acronyms:get(a).shortname < Acronyms:get(b).shortname end)
-    elseif criteria == "usage" then
-        if options["include_unused"] then
-            error("When the 'usage' sorting is used, 'include_unused' must be set to false!")
-        end
-        table.sort(keys,
-            function (a,b) return Acronyms:get(a).usage_order < Acronyms:get(b).usage_order end)
-    elseif criteria == "initial" then
-        table.sort(keys,
-            function (a,b) return Acronyms:get(a).initial_order < Acronyms:get(b).initial_order end)
-    else
-        warn("Sorting criteria unrecognized: " .. criteria)
-    end
-    return keys
-end
-
-
---[[
 Generate the List Of Acronyms.
 Returns 2 values: the Header, and the DefinitionList.
 --]]
 function generateLoA()
     -- Original idea from https://gist.github.com/RLesur/e81358c11031d06e40b8fef9fdfb2682
 
-    -- We first get the list of sorted keys, according to the defined criteria.
-    local keys = sortAcronyms(Acronyms.acronyms, options["sorting"])
+    -- We first get the list of sorted acronyms, according to the defined criteria.
+    local sorted = sortAcronyms(Acronyms.acronyms, options["sorting"])
 
     -- Create the table that represents the DefinitionList
     local definition_list = {}
-    for i, key in ipairs(keys) do
+    for _, acronym in ipairs(sorted) do
         -- The definition's name. A Span with an ID so we can create a link.
-        local name = pandoc.Span(Acronyms:get(key).shortname,
-            pandoc.Attr(key_to_id(key), {}, {}))
+        local name = pandoc.Span(acronym.shortname,
+            pandoc.Attr(key_to_id(acronym.key), {}, {}))
         -- The definition's value.
-        local definition = pandoc.Plain(Acronyms:get(key).longname)
+        local definition = pandoc.Plain(acronym.longname)
         table.insert(definition_list, { name, definition })
     end
 
