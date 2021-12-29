@@ -20,9 +20,7 @@ test_dir <- function(dirname) {
     expected_path <- file.path(getwd(), dirname, "expected.md")
 
     rmarkdown::render(input_path,
-                      # output_format = "md_document",
                       output_file = out_path,
-                      # output_options=c("md_document.variant" = "markdown")
     )
 
     lines_expected <- readLines(expected_path)
@@ -50,4 +48,12 @@ testthat::test_that("04-replace-duplicates", {
 
 testthat::test_that("05-keep-duplicates", {
     test_dir("05-keep-duplicates")
+})
+
+testthat::test_that("06-external-yaml", {
+    test_dir("06-external-yaml")
+})
+
+testthat::test_that("07-multiple-external-yaml", {
+    test_dir("07-multiple-external-yaml")
 })
