@@ -24,6 +24,7 @@ the List of Acronyms, so that readers can access the definition in one click.
     + Following occurrences are simply replaced by *short name*.
     + All occurrences are also linked to the acronym's definition in
     the List of Acronyms.
+- Define acronyms directly in your document or in external files.
 - Extensive configuration
     + Most of this package's mechanisms can be configured: how to handle
     duplicate keys, whether to raise an error, print a warning or ignore an
@@ -116,6 +117,8 @@ acronyms:
     - key: morl
       shortname: MORL
       longname: Multi-Objective Reinforcement Learning
+  fromfile:
+    - ./acronyms.yml
 ---
 ```
 
@@ -160,6 +163,12 @@ acronyms:
   - `replace`: The first acronym is replaced by the new one (no warning).
   - `keep`: The first acronym is kept (no warning).
   - `error`: The program raises a descriptive error, and stops.
+* `fromfile`: You can define your acronyms in external files. In this case,
+  set these files' path in `fromfile` to make **acronymsdown** read them.
+  These files must have a similar format to this YAML metadata, and in
+  particular the `acronyms.key` field. Please refer to the tests-examples
+  [06](tests/06-external-yaml/) and [07](tests/07-multiple-external-yaml/) 
+  for more details.
 
 On the notion of *key*: in the previous example, notice that the *MORL* 
 acronym has an additional `key` field. If explicitly set, **acronymsdown**
@@ -222,7 +231,8 @@ This package was inspired from:
 
 - an [issue on bookdown](https://github.com/rstudio/bookdown/issues/199) ;
 - [a lua filter to sort a definition list](https://gist.github.com/RLesur/e81358c11031d06e40b8fef9fdfb2682) ;
-- and the [pagedown's insertion of a List of Figures/Tables](https://github.com/rstudio/pagedown/blob/main/inst/resources/lua/loft.lua).
+- the [pagedown's insertion of a List of Figures/Tables](https://github.com/rstudio/pagedown/blob/main/inst/resources/lua/loft.lua) ;
+- the [pandoc-abbreviations filter](https://github.com/dsanson/pandoc-abbreviations.lua/)
 
 
 [rmarkdown]: https://rmarkdown.rstudio.com/
