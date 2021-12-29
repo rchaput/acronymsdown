@@ -1,0 +1,44 @@
+name: Create release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout the source code
+        uses: actions/checkout@v2
+
+      - name: Zip the Lua files
+        # We want the top-level directory to be "acronymsdown",
+        # instead of "inst". So we first copy the files to a new directory.
+        run: |
+          mkdir -p /tmp/acronymsdown
+          cp ./inst/*.lua /tmp/acronymsdown
+          cd /tmp
+          zip -r acronymsdown.zip acronymsdown/
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          # FIXME: get the tag's message (or use generate_release_notes?)
+          body: ""
+
+      - name: Upload artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /tmp/acronymsdown.zip
+          asset_name: acronymsdown-pandoc.zip
+          asset_content_type: application/zip
