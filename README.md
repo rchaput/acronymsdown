@@ -20,8 +20,9 @@ the List of Acronyms, so that readers can access the definition in one click.
 - Automatic sorting of this list.
     + You can choose between the *alphabetical*, *usage* or *initial* order.
 - Easily manage acronyms
-    + The first occurrence of an acronym is replaced by *long name (short name)*.
-    + Following occurrences are simply replaced by *short name*.
+    + Choose between multiple styles to replace acronyms.
+    + By default, 1st occurrence is replaced by *long name (short name)*,
+    and following occurrences are simply replaced by *short name*.
     + All occurrences are also linked to the acronym's definition in
     the List of Acronyms.
 - Define acronyms directly in your document or in external files.
@@ -111,6 +112,7 @@ acronyms:
   id_prefix: "acronyms_"
   sorting: "alphabetical"
   inexisting_keys: "warn"
+  style: "long-short"
   keys:
     - shortname: RL
       longname: Reinforcement Learning
@@ -169,6 +171,11 @@ acronyms:
   particular the `acronyms.key` field. Please refer to the tests-examples
   [06](tests/06-external-yaml/) and [07](tests/07-multiple-external-yaml/) 
   for more details.
+* `style`: Controls how to replace acronyms. Styles are inspired from the
+  LaTeX package [glossaries]. Available options are:
+  - `long-short` (default)
+  - `short-long`
+  - `short-footnote`
 
 On the notion of *key*: in the previous example, notice that the *MORL* 
 acronym has an additional `key` field. If explicitly set, **acronymsdown**
@@ -240,3 +247,4 @@ This package was inspired from:
 [rstudio]: https://www.rstudio.com/
 [bookdown]: https://bookdown.org/
 [Lua Filter]: https://pandoc.org/lua-filters.html
+[glossaries]: https://mirrors.chevalier.io/CTAN/macros/latex/contrib/glossaries-extra/samples/sample-abbr-styles.pdf

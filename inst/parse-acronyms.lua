@@ -26,6 +26,9 @@ require("acronyms")
 -- Sorting function
 local sortAcronyms = require("sort_acronyms")
 
+-- Replacement function (handling styles)
+local replaceExistingAcronymWithStyle = require("acronyms_styles")
+
 -- The options for the List Of Acronyms, as defined in the document's metadata.
 local options = {}
 
@@ -123,6 +126,12 @@ function parseOptionsFromMetadata(m)
         options["on_duplicate"] = "warn"
     else
         options["on_duplicate"] = pandoc.utils.stringify(options["on_duplicate"])
+    end
+
+    if options["style"] == nil then
+        options["style"] = "long-short"
+    else
+        options["style"] = pandoc.utils.stringify(options["style"])
     end
 
 end
@@ -234,19 +243,13 @@ function replaceExistingAcronym(acr_key)
     local acronym = Acronyms:get(acr_key)
     acronym:incrementOccurrences()
     if acronym:isFirstUse() then
-        -- This acronym never appeared!
-        -- We first set its usage order
+        -- This acronym never appeared! We first set its usage order.
         current_order = current_order + 1
         acronym.usage_order = current_order
-        -- We display the full name + the acronym between parenthesis
-        local text = acronym.longname .. " (" .. acronym.shortname .. ")"
-        return pandoc.Link(text, key_to_link(acr_key))
-    else
-        -- This acr_key already appeared at least once.
-        -- We therefore display only the acronym.
-        return pandoc.Link(acronym.shortname,
-            key_to_link(acr_key))
     end
+
+    -- Replace the acronym with the desired style
+    return replaceExistingAcronymWithStyle(acronym, options["style"])
 end
 
 --[[
