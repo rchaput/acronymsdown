@@ -1,0 +1,17 @@
+---
+output:
+  md_document:
+    pandoc_args: !expr acronymsdown::add_filter()
+    variant: markdown
+acronyms:
+  style: short-footnote
+  keys:
+    - shortname: RL
+      longname: Reinforcement Learning
+---
+
+# Introduction {#intro}
+
+This paragraph mentions \acr{RL} for the first time.
+
+And now, in this paragraph, \acr{RL} is in short form.

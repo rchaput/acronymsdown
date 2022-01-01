@@ -57,3 +57,11 @@ testthat::test_that("06-external-yaml", {
 testthat::test_that("07-multiple-external-yaml", {
     test_dir("07-multiple-external-yaml")
 })
+
+testthat::test_that("08-style-short-long", {
+    test_dir("08-style-short-long")
+})
+
+testthat::test_that("09-style-footnote", {
+    test_dir("09-style-footnote")
+})
