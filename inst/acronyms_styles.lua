@@ -36,9 +36,20 @@
 local styles = {}
 
 
+-- Local helper function to create either a Str or a Link,
+-- depending on whether we want to insert links.
+local function create_element(content, key, insert_links)
+    if insert_links then
+        return pandoc.Link(content, key_to_link(key))
+    else
+        return pandoc.Str(content)
+    end
+end
+
+
 -- First use: long name (short name)
 -- Next use: short name
-styles["long-short"] = function(acronym)
+styles["long-short"] = function(acronym, insert_links)
     local text
     if acronym:isFirstUse() then
         text = acronym.longname .. " (" .. acronym.shortname .. ")"
@@ -46,14 +57,13 @@ styles["long-short"] = function(acronym)
         text = acronym.shortname
     end
 
-    local link_to = key_to_link(acronym.key)
-    return pandoc.Link(text, link_to)
+    return create_element(text, acronym.key, insert_links)
 end
 
 
 -- First use: short name (long name)
 -- Next use: short name
-styles["short-long"] = function(acronym)
+styles["short-long"] = function(acronym, insert_links)
     local text
     if acronym:isFirstUse() then
         text = acronym.shortname .. " (" .. acronym.longname .. ")"
@@ -61,16 +71,14 @@ styles["short-long"] = function(acronym)
         text = acronym.shortname
     end
 
-    local link_to = key_to_link(acronym.key)
-    return pandoc.Link(text, link_to)
+    return create_element(text, acronym.key, insert_links)
 end
 
 
 -- First use: short name [^1]
 -- [^1]: short name: long name
 -- Next use: short name
-styles["short-footnote"] = function(acronym)
-    local link_to = key_to_link(acronym.key)
+styles["short-footnote"] = function(acronym, insert_links)
     if acronym:isFirstUse() then
         -- The inline text (before the footnote)
         local text = pandoc.Str(acronym.shortname)
@@ -80,7 +88,7 @@ styles["short-footnote"] = function(acronym)
         -- Directly using a list inside the Note seems not to work.
         local note = pandoc.Note(
                 pandoc.Plain({
-                    pandoc.Link(acronym.shortname, link_to),
+                    create_element(acronym.shortname, acronym.key, insert_links),
                     pandoc.Str(": " .. acronym.longname)
                 })
         )
@@ -88,14 +96,14 @@ styles["short-footnote"] = function(acronym)
         return { text, note }
     else
         -- Simply return the shortname
-        return pandoc.Link(acronym.shortname, link_to)
+        return create_element(acronym.shortname, acronym.key, insert_links)
     end
 end
 
 
 -- The "public" API of this module, the function which is returned by
 -- require.
-return function(acronym, style_name)
+return function(acronym, style_name, insert_links)
     -- Check that the requested strategy exists
     assert(style_name ~= nil,
         "style_name must not be nil!")
@@ -107,5 +115,5 @@ return function(acronym, style_name)
         "acronym must not be nil!")
 
     -- Call the style on this acronym
-    return styles[style_name](acronym)
+    return styles[style_name](acronym, insert_links)
 end

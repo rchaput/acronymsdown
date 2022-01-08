@@ -134,6 +134,10 @@ function parseOptionsFromMetadata(m)
         options["style"] = pandoc.utils.stringify(options["style"])
     end
 
+    if options["insert_links"] == nil then
+        options["insert_links"] = true
+    end
+
 end
 
 
@@ -249,7 +253,11 @@ function replaceExistingAcronym(acr_key)
     end
 
     -- Replace the acronym with the desired style
-    return replaceExistingAcronymWithStyle(acronym, options["style"])
+    return replaceExistingAcronymWithStyle(
+        acronym,
+        options["style"],
+        options["insert_links"]
+    )
 end
 
 --[[
