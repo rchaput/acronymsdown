@@ -227,10 +227,10 @@ function replaceInexistingAcronym(acr_key)
     if options["inexisting_keys"] == "ignore" then
         return pandoc.Str(acr_key)
     elseif options["inexisting_keys"] == "warn" then
-        warn("Acronym key " .. key .. " not recognized, ignoring...")
+        warn("Acronym key " .. acr_key .. " not recognized, ignoring...")
         return pandoc.Str(acr_key)
     elseif options["inexisting_keys"] == "error" then
-        error("Acronym key " .. key .. " not recognized, stopping!")
+        error("Acronym key " .. acr_key .. " not recognized, stopping!")
     else
         error("Unrecognized option inexisting_keys=" .. options["inexisting_keys"])
     end
