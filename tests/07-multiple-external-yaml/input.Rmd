@@ -1,7 +1,9 @@
 ---
 output:
   md_document:
-    pandoc_args: !expr acronymsdown::add_filter()
+    pandoc_args:
+      - !expr acronymsdown::add_filter()
+      - --wrap=preserve
     variant: markdown
 acronyms:
   # Warning! The following path must be either absolute or relative to the 

@@ -5,7 +5,6 @@
 
 # Introduction {#intro}
 
-This paragraph mentions [Rocket League (RL)](#acronyms_RL) for the first
-time.
+This paragraph mentions [Rocket League (RL)](#acronyms_RL) for the first time.
 
 And now, in this paragraph, [RL](#acronyms_RL) is in short form.

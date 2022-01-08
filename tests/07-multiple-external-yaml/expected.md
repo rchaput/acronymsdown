@@ -8,11 +8,8 @@
 
 # Introduction {#intro}
 
-This paragraph mentions [Reinforcement Learning (RL)](#acronyms_RL) for
-the first time.
+This paragraph mentions [Reinforcement Learning (RL)](#acronyms_RL) for the first time.
 
 And now, in this paragraph, [RL](#acronyms_RL) is in short form.
 
-In this paragraph,
-[Multi-Objective Reinforcement Learning (MORL)](#acronyms_MORL) is
-introduced.
+In this paragraph, [Multi-Objective Reinforcement Learning (MORL)](#acronyms_MORL) is introduced.
