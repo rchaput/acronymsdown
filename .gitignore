@@ -4,5 +4,11 @@
 .RData
 .Ruserdata
 
+# JetBrains IDE (Dataspell)
+.idea/
+
 # Package tarball
 acronymsdown_*.tar.gz
+
+# Documentation (pkgdown)
+docs

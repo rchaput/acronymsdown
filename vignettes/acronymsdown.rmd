@@ -1,0 +1,142 @@
+---
+title: "Introduction to acronymsdown"
+description: >
+  Learn how to get started with the basics of acronymsdown.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to acronymsdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The goal of **acronymsdown** is to provide support for acronyms to RMarkdown
+documents, in a similar way to what [glossaries] achieve for LaTeX.
+
+Basically, it allows you to define a list of acronyms, and to automatically
+replace acronyms inside the document.
+A list of all defined acronyms along with their definitions is also generated
+and inserted.
+
+Using **acronymsdown** can be done in 3 simple steps:
+
+1. Adding the Pandoc argument
+2. Defining acronyms
+3. Using acronyms
+
+## Adding the Pandoc argument
+
+The features of **acronymsdown** are implemented as a Pandoc [Lua Filter],
+which must be registered with Pandoc by adding a Pandoc argument, in the
+YAML metadata of the document:
+
+```yaml
+---
+output:
+  pdf_document:
+    pandoc_args: !expr acronymsdown::add_filter()
+---
+```
+
+In the previous example, `pdf_document` was used as the output format,
+but **acronymsdown** should be compatible with any output format, such
+as `html_document`, or even formats provided by other libraries, such as
+`bookdown::git_book`.
+
+If several output formats are defined in the YAML metadata, simply duplicate
+the `pandoc_args` field for each of them. For example:
+
+```yaml
+---
+output:
+  pdf_document:
+    pandoc_args: !expr acronymsdown::add_filter()
+  bookdown::git_book:
+    pandoc_args: !expr acronymsdown::add_filter()
+---
+```
+
+## Defining acronyms
+
+Prior to using acronyms in the RMarkdown document, they must be defined in
+the YAML metadata.
+
+An acronym is defined as:
+
+- a key, which is used to refer to the acronym throughout the document ;
+- a short name, which is usually the acronym itself ;
+- a long name, which is usually what the acronym stands for.
+
+To make the list less verbose, if the key is not provided, **acronymsdown**
+uses the short name as a default key for the acronym.
+
+The following example defines 2 acronyms:
+
+```yaml
+---
+acronyms:
+  keys:
+    - shortname: Rmd
+      longname: Rmarkdown document
+    - key: yaml
+      shortname: YAML
+      longname: YAML Ain't Markup Language
+---
+```
+
+## Using acronyms
+
+Finally, to insert an acronym into the document, simply use `\acr{<KEY>}`,
+where `<KEY>` is an acronym's key, as defined in the YAML metadata.
+
+This command will be automatically replaced by **acronymsdown**. The result
+depends on the chosen style (see `vignette("styles")` for more details). Most
+styles will also make a difference between the first use, and the next
+occurrences.
+
+By default, **acronymsdown** will replace as follows:
+
+- first use: `<long name> (<short name>)`
+- next uses: `<short name>`
+
+The next lines show an example of how **acronymsdown** replaces acronyms
+in a document, assuming the acronyms `Rmd` and `yaml` have been defined, as
+per the previous example.
+
+```md
+\acr{Rmd} allows to easily write technical content. \acr{Rmd} uses \acr{yaml}
+for the metadata.
+```
+
+> RMarkdown document (Rmd) allows to easily write technical content. Rmd uses
+> YAML Ain't Markup Language (YAML) for the metadata.
+
+
+## Complete example
+
+A complete example showing the previous instructions as a single file can
+be found [here][01-simple].
+
+More generally, the [tests] are defined as Rmarkdown documents
+that are rendered by Pandoc using **acronymsdown** and compared to a known
+(expected) result.
+
+As such, they also serve as examples for the various features and options.
+
+## Next steps
+
+The current vignette gives you the tools for a simple document, using the
+(sane) defaults provided by **acronymsdown**.
+However, most of the mechanisms are highly configurable and offer various
+options.
+
+An advanced usage is covered in `vignette("advanced_usage")`, while the
+available options are described in `vignette("options")`.
+
+`vignette("styles")` lists the different styles that can be used, along
+with a small example to visualize each of them.
+
+
+[glossaries]: https://www.ctan.org/pkg/glossaries
+[Lua Filter]: https://pandoc.org/lua-filters.html
+[tests]: https://github.com/rchaput/acronymsdown/tree/master/tests
+[01-simple]: https://github.com/rchaput/acronymsdown/blob/master/tests/01-simple/input.Rmd

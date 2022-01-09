@@ -1,0 +1,18 @@
+url: https://rchaput.github.io/acronymsdown
+template:
+  bootstrap: 5
+navbar:
+  structure:
+    left: [intro, articles, reference, news]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: Options
+          href: articles/options.html
+        - text: Styles
+          href: articles/styles.html
+        - text: -------
+        - text: Advanced usage
+          href: articles/advanced_usage.html

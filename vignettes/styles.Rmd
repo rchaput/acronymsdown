@@ -1,0 +1,88 @@
+---
+title: "Styles"
+description: >
+  List of the available styles for replacing acronyms.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Styles}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+To replace acronyms in your document, **acronymsdown** offers several
+styles, which are quite similar to the [abbreviations styles] in the
+LaTeX package [glossaries].
+
+This vignette lists the available styles, and shows how they render.
+
+Styles might make a difference between the first use and next uses of an
+acronym. In the following list, the two variations are shown for each
+style.
+
+For each of the style examples, we will use the following document
+(metadata and body):
+```yaml
+---
+acronyms:
+  keys:
+    - shortname: Rmd
+      longname: RMarkdown document
+  style: <STYLE>
+  insert_beginning: false
+  insert_links: false
+---
+First use: \acr{Rmd}
+
+Next uses: \acr{Rmd}
+```
+
+```{bash test-style-function, echo=FALSE}
+###
+# This code chunk defines an helper function to render
+# style examples.
+# However, Knitr / Rmarkdown does not seem to use the
+# same shell between code chunks. Therefore, this definition
+# is lost. We need to re-include the chunk in each of the actual
+# testing chunks.
+###
+test_style () {
+pandoc -t markdown -f markdown --lua-filter=../inst/parse-acronyms.lua <<EOF
+---
+acronyms:
+  keys:
+    - shortname: Rmd
+      longname: RMarkdown document
+  style: $1
+  insert_beginning: false
+  insert_links: false
+---
+First use: \acr{Rmd}
+
+Next uses: \acr{Rmd}
+EOF
+}
+```
+
+[abbreviations styles]: https://mirrors.chevalier.io/CTAN/macros/latex/contrib/glossaries-extra/samples/sample-abbr-styles.pdf
+[glossaries]: https://www.ctan.org/pkg/glossaries
+
+## long-short
+
+```{bash, echo=FALSE, results='asis'}
+<<test-style-function>>
+test_style "long-short"
+```
+
+## short-long
+
+```{bash, echo=FALSE, results='asis'}
+<<test-style-function>>
+test_style "short-long"
+```
+
+## short-footnote
+
+```{bash, echo=FALSE, results='asis'}
+<<test-style-function>>
+test_style "short-footnote"
+```

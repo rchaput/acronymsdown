@@ -16,4 +16,7 @@ install:
 tests:
 	cd tests/ && Rscript testthat.R
 
+site:
+	R -q -e "library(pkgdown); pkgdown::build_site()"
+
 .PHONY: tests

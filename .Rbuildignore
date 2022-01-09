@@ -5,3 +5,10 @@ Makefile
 
 TODOLIST
 debug.sh
+
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+
+^\.idea$

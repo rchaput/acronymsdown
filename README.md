@@ -4,17 +4,26 @@
 
 ## Description
 
-This package adds the ability to automatically generate a list of acronyms
+This package adds the ability to automatically handle acronyms
 inside [RMarkdown][rmarkdown] (Rmd) documents.
 
 Throughout the document, acronyms are replaced by either their short name,
 or their long name, depending on whether they appear for the first time.
-In any case, they are also linked to their corresponding definition in
-the List of Acronyms, so that readers can access the definition in one click.
+They also may be linked to their corresponding definition in an automatically
+generated List of Acronyms, so that readers can access the definition in one 
+click.
+
+The package documentation can be found online at 
+https://rchaput.github.io/acronymsdown, or directly in your R console using
+`vignette("acronymsdown")`.
 
 ## Features
 
-- Generate a List of Acronyms based on your defined terms.
+- Tired of manually having to check whether the first occurrence of an
+  acronym is correctly explained to your readers? **acronymsdown**
+  automatically replaces acronyms, based on whether they appear for the
+  first time.
+- Generate a List of Acronyms based on your defined acronyms.
     + The place where this list will be generated can be specified (by
     default, at the beginning of the document).
 - Automatic sorting of this list.
@@ -23,7 +32,7 @@ the List of Acronyms, so that readers can access the definition in one click.
     + Choose between multiple styles to replace acronyms.
     + By default, 1st occurrence is replaced by *long name (short name)*,
     and following occurrences are simply replaced by *short name*.
-    + All occurrences are also linked to the acronym's definition in
+    + All occurrences can also be linked to the acronym's definition in
     the List of Acronyms.
 - Define acronyms directly in your document or in external files.
 - Extensive configuration
@@ -65,131 +74,34 @@ Using this package requires 3 simple steps:
 1. Setup the custom Pandoc arguments for your document output format
   in the YAML metadata.
 
-```yaml
----
-output:
-  pdf_document:
-    pandoc_args: !expr acronymsdown::add_filter()
----
-```
+`pandoc_args: !expr acronymsdown::add_filter()`
 
-2. Define your possible acronyms in the YAML metadata.
+2. Define your acronyms in the YAML metadata.
 
 ```yaml
 ---
 acronyms:
-  keys:
+  key:
     - shortname: Rmd
-      longname: R Markdown
+      longname: RMarkdown
     - shortname: YAML
       longname: YAML Ain't Markup Language
----
 ```
 
 3. And finally, use your acronyms in your Rmd document with the `\acr{<KEY>}`
-special command! Each `\acr{<KEY>}` is parsed by **acronymsdown**, where
-`<KEY>` is an acronym key (usually its short name, see more in the 
-Advanced usage section).
+special command!
 
-```md
-Acronymsdown enhances your \acr{Rmd} documents. \acr{Rmd} is a great tool!
-```
+`\acr{Rmd} can be used to write technical content. \acr{Rmd} uses \acr{YAML}.`
 
-## Advanced usage (options)
-
-The behavior of **acronymsdown** can be customized by several options,
-which can be set in the YAML metadata of your Rmd document.
-
-See the following example for a quick overview of all available options,
-which are explained after:
-
-```yaml
----
-acronyms:
-  loa_title: "List of Acronyms"
-  include_unused: true
-  insert_beginning: true
-  id_prefix: "acronyms_"
-  sorting: "alphabetical"
-  non_existing: "key"
-  style: "long-short"
-  keys:
-    - shortname: RL
-      longname: Reinforcement Learning
-    - key: morl
-      shortname: MORL
-      longname: Multi-Objective Reinforcement Learning
-  fromfile:
-    - ./acronyms.yml
----
-```
-
-* `loa_title`: Set the title of the generated List of Acronyms. 
-  By default, it is set to "List of Acronyms".
-  - If `loa_title` is set to `""` (the empty string), the title is
-    disabled. The List of Acronyms will still be generated, but without
-    a preceding header.
-* `include_unused`: Whether unused acronyms should be included in the 
-  generated List. Acronyms are considered unused if they are defined in 
-  the `acronyms.keys` field, but their key does not appear in a single 
-  `\acr{key}` command in the document.
-* `insert_beginning`: Whether to automatically insert the List of Acronyms
-  at the beginning of the document. If you wish to generate this List at
-  a different place, you should set this to `false`, and use the
-  `\printacronyms` command in your document (where you want the List to
-  be generated). Note: `\printacronyms` needs to appear exactly as-is, in
-  its own paragraph, with no other text.
-* `id_prefix`: Set the prefix which is used to create the acronyms' ID
-  (in order to link each acronym to their definition). By default, it is set
-  to `acronyms_`. This option should be used if you detect a conflict
-  between **acronymsdown** and another ID in your Rmd.
-* `sorting`: Controls the order in which acronyms are displayed in the
-  List of Acronyms. The following values are available:
-  - `alphabetical`: (default) Acronyms are sorted by their short name, in
-    alphabetical order.
-  - `initial`: Acronyms are sorted by the order in which they are defined
-    in the YAML metadata.
-  - `usage`: Acronyms are sorted in the order in which they are first used
-    in the Rmd document. For example, `\acr{RL} \acr{MORL}` means that
-    the *RL* acronym appears before the *MORL* one.
-    *Warning*: if this sorting is used, the `include_unused` option **MUST**
-    be set to `false`! Otherwise, **acronymsdown** will raise an error.
-* `non_existing`: Controls what to do when an acronym key is not found.
-  - `key`: (default) A descriptive warning is printed, and the acronym
-    is replaced by the key.
-  - `??`: A descriptive warning is printed, and the acronym is replaced
-    by `??` (a behaviour similar to bibtex when a citekey is not found).
-  - `error`: A descriptive error is raised, and the parsing stops.
-* `on_duplicate`: Controls what to do when two acronyms with the same key
-  are defined.
-  - `warn`: (default) A warning is issued, and the first defined acronym is kept.
-  - `replace`: The first acronym is replaced by the new one (no warning).
-  - `keep`: The first acronym is kept (no warning).
-  - `error`: The program raises a descriptive error, and stops.
-* `fromfile`: You can define your acronyms in external files. In this case,
-  set these files' path in `fromfile` to make **acronymsdown** read them.
-  These files must have a similar format to this YAML metadata, and in
-  particular the `acronyms.key` field. Please refer to the tests-examples
-  [06](tests/06-external-yaml/) and [07](tests/07-multiple-external-yaml/) 
-  for more details.
-* `style`: Controls how to replace acronyms. Styles are inspired from the
-  LaTeX package [glossaries]. Available options are:
-  - `long-short` (default)
-  - `short-long`
-  - `short-footnote`
-
-On the notion of *key*: in the previous example, notice that the *MORL* 
-acronym has an additional `key` field. If explicitly set, **acronymsdown**
-will use this `key` to refer to the acronyms, e.g., `\acr{morl}`.
-By default, if no `key` is specified, **acronymsdown** uses the short name
-itself, e.g., `\acr{RL}`.
+Please refer to the [Get started](https://rchaput.github.io/acronymsdown/articles/acronymsdown.html)
+(`vignette("acronymsdown")`) guide for more details.
 
 ## FAQ
 
 **Q: Are there any examples on how to use this?**
 
-A: The [automated tests](tests/) are designed as Rmd documents
-which also serve as examples of various configurations.
+A: The [automated tests] are designed as Rmd documents which also serve as 
+examples of various configurations.
 Each of the sub-directories is a specific example, where the `input.Rmd` is
 the source Rmd document, and `expected.md` is the expected result.
 
@@ -220,14 +132,14 @@ To do so, simply pass the additional arguments directly to Pandoc:
 ```sh
 pandoc --lua-filter /path/to/parse-acronyms.lua input.md
 ```
-where `/path/to/parse-acronyms.lua` is the path to the 
-[parse-acronyms.lua](inst/parse-acronyms.lua) script.
+where `/path/to/parse-acronyms.lua` is the path to the [parse-acronyms.lua] 
+script.
 
 If the **acronymsdown** package is installed, you can use the R method
 `system.file("parse-acronyms.lua", package = "acronymsdown")` to get the
 path to this file on your system.
 
-You can also download the Lua files (in the [inst/](inst/) folder) directly, 
+You can also download the Lua files (in the [inst/] folder) directly, 
 and store them in a convenient location on your system.
 Note: you must download *all* Lua files and store them in the same folder!
 Otherwise, Lua will raise an error. The "main" script, which must be loaded
@@ -249,3 +161,6 @@ This package was inspired from:
 [bookdown]: https://bookdown.org/
 [Lua Filter]: https://pandoc.org/lua-filters.html
 [glossaries]: https://mirrors.chevalier.io/CTAN/macros/latex/contrib/glossaries-extra/samples/sample-abbr-styles.pdf
+[automated tests]: https://github.com/rchaput/acronymsdown/tree/master/tests
+[parse-acronyms.lua]: https://github.com/rchaput/acronymsdown/blob/master/inst/parse-acronyms.lua
+[inst/]: https://github.com/rchaput/acronymsdown/tree/master/inst
