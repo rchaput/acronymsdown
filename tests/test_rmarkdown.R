@@ -36,7 +36,9 @@ folders <- c(
   "07-multiple-external-yaml",
   "08-style-short-long",
   "09-style-footnote",
-  "10-no-links"
+  "10-no-links",
+  "11-missing-key",
+  "12-missing-??"
 )
 
 for (folder in folders) {
