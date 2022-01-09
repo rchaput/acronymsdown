@@ -118,8 +118,10 @@ function parseOptionsFromMetadata(m)
         options["insert_beginning"] = true
     end
 
-    if options["inexisting_keys"] == nil then
-        options["inexisting_keys"] = "warn"
+    if options["non_existing"] == nil then
+        options["non_existing"] = "key"
+    else
+        options["non_existing"] = pandoc.utils.stringify(options["non_existing"])
     end
 
     if options["on_duplicate"] == nil then
@@ -223,20 +225,25 @@ end
 --[[
 Replace an acronym `\acr{KEY}`, where KEY is not in the `acronyms` table.
 According to the options, we can either:
-- ignore, and return simply the KEY as text
-- print a warning, and return simply the KEY as text
+- warn, and return simply the KEY as text
+- warn, and return "??" as text (similar to bibtex's behaviour)
 - raise an error
 --]]
-function replaceInexistingAcronym(acr_key)
-    if options["inexisting_keys"] == "ignore" then
+function replaceNonExistingAcronym(acr_key)
+    -- TODO: adding the source line to warnings would be useful.
+    --  But maybe not doable in Pandoc?
+    if options["non_existing"] == "key" then
+        warn("Acronym key " .. tostring(acr_key) .. " not recognized")
         return pandoc.Str(acr_key)
-    elseif options["inexisting_keys"] == "warn" then
-        warn("Acronym key " .. acr_key .. " not recognized, ignoring...")
-        return pandoc.Str(acr_key)
-    elseif options["inexisting_keys"] == "error" then
-        error("Acronym key " .. acr_key .. " not recognized, stopping!")
+    elseif options["non_existing"] == "??" then
+        warn("Acronym key " .. tostring(acr_key) .. " not recognized")
+        return pandoc.Str("??")
+    elseif options["non_existing"] == "error" then
+        error("Acronym key " .. tostring(acr_key)
+                .. " not recognized, stopping!")
     else
-        error("Unrecognized option inexisting_keys=" .. options["inexisting_keys"])
+        error("Unrecognized option non_existing="
+                .. tostring(options["non_existing"]))
     end
 end
 
@@ -272,7 +279,7 @@ function replaceAcronym(el)
             return replaceExistingAcronym(acr_key)
         else
             -- The acronym does not exists
-            return replaceInexistingAcronym(acr_key)
+            return replaceNonExistingAcronym(acr_key)
         end
     else
         -- This is not an acronym, return nil to leave it unchanged.

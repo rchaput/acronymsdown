@@ -47,7 +47,7 @@ remotes::install_github("rchaput/acronymsdown")
 
 Alternatively, you can also use `devtools`:
 
-``` r
+```r
 install.packages("devtools")
 devtools::install_github("rchaput/acronymsdown")
 ```
@@ -111,7 +111,7 @@ acronyms:
   insert_beginning: true
   id_prefix: "acronyms_"
   sorting: "alphabetical"
-  inexisting_keys: "warn"
+  non_existing: "key"
   style: "long-short"
   keys:
     - shortname: RL
@@ -154,10 +154,11 @@ acronyms:
     the *RL* acronym appears before the *MORL* one.
     *Warning*: if this sorting is used, the `include_unused` option **MUST**
     be set to `false`! Otherwise, **acronymsdown** will raise an error.
-* `inexisting_keys`: Controls what to do when an acronym key is not found.
-  - `warn`: (default) A descriptive warning is printed, and the acronym
+* `non_existing`: Controls what to do when an acronym key is not found.
+  - `key`: (default) A descriptive warning is printed, and the acronym
     is replaced by the key.
-  - `ignore`: The acronym is simply replaced by the key.
+  - `??`: A descriptive warning is printed, and the acronym is replaced
+    by `??` (a behaviour similar to bibtex when a citekey is not found).
   - `error`: A descriptive error is raised, and the parsing stops.
 * `on_duplicate`: Controls what to do when two acronyms with the same key
   are defined.
