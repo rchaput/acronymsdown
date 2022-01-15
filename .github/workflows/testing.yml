@@ -1,0 +1,45 @@
+name: Automatic testing
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        R: [ '4.1.2' ]
+        pandoc: [ '2.16.2' ]
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+
+      - name: Checkout the source code
+        uses: actions/checkout@v2
+
+      - name: Setup pandoc ${{ matrix.pandoc }}
+        uses: r-lib/actions/setup-pandoc@v2
+        with:
+          pandoc-version: ${{ matrix.pandoc }}
+
+      - name: Setup R ${{ matrix.R }}
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.R }}
+          use-public-rspm: true
+
+      - name: Download dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: testthat, devtools
+
+      - name: Run R CMD CHECK
+        run: make check
+
+      - name: Build and install package
+        run: make doc build install
+
+      - name: Run automatic tests
+        run: make tests
