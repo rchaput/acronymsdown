@@ -1,7 +1,7 @@
 all: check build doc install
 
 check:
-	R -q -e "library(devtools); check()"
+	R -q -e "library(devtools); check(cran = FALSE)"
 
 build:
 	# We want to build in the current working dir, rather than the parent dir

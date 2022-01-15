@@ -9,7 +9,10 @@ Description: Adds support for list of acronyms (or glossaries) for RMarkdown
 Imports:
     rmarkdown (>= 1.12)
 Suggests:
+    knitr,
     testthat (>= 3.0.0)
+VignetteBuilder:
+    knitr
 SystemRequirements: pandoc (>= 2.0; https://pandoc.org)
 License: GPL-3 + file LICENSE
 URL: https://rchaput.github.io/acronymsdown, https://github.com/rchaput/acronymsdown

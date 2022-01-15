@@ -34,8 +34,8 @@ e.g., \code{pdf_document}, \code{bookdown::html_book}, etc.
 If several output formats are used, \code{pandoc_args} should be duplicated
 for each of the formats.
 
-This method is largely inspired from \emph{rmdfiltr}
-\link{https://github.com/crsh/rmdfiltr/}
+This method is largely inspired from
+\href{https://github.com/crsh/rmdfiltr/}{rmdfiltr}
 }
 \section{Examples}{
 \code{pandoc_args} support several syntaxes, which are shown below.

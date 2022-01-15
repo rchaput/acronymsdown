@@ -18,8 +18,8 @@
 #' If several output formats are used, `pandoc_args` should be duplicated
 #' for each of the formats.
 #'
-#' This method is largely inspired from *rmdfiltr*
-#' [https://github.com/crsh/rmdfiltr/]
+#' This method is largely inspired from
+#' [rmdfiltr](https://github.com/crsh/rmdfiltr/)
 #'
 #' @details
 #' # Examples
