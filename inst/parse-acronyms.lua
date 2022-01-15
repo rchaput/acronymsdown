@@ -41,8 +41,15 @@ local current_order = 0
 
 
 -- A helper function to print warnings
-function warn(msg)
-   io.stderr:write("[WARNING][acronymsdown] " .. msg .. "\n")
+function warn(...)
+    -- Handle variadic args: use `tostring` to avoid errors
+    -- (in particular for table or nil values)
+    local t = table.pack(...)
+    for i=1, t.n do
+        t[i] = tostring(t[i])
+    end
+    local msg = table.concat(t, "")
+    io.write("[WARNING][acronymsdown] ", msg, "\n")
 end
 
 
@@ -233,10 +240,10 @@ function replaceNonExistingAcronym(acr_key)
     -- TODO: adding the source line to warnings would be useful.
     --  But maybe not doable in Pandoc?
     if options["non_existing"] == "key" then
-        warn("Acronym key " .. tostring(acr_key) .. " not recognized")
+        warn("Acronym key ", acr_key, " not recognized")
         return pandoc.Str(acr_key)
     elseif options["non_existing"] == "??" then
-        warn("Acronym key " .. tostring(acr_key) .. " not recognized")
+        warn("Acronym key ", acr_key, " not recognized")
         return pandoc.Str("??")
     elseif options["non_existing"] == "error" then
         error("Acronym key " .. tostring(acr_key)

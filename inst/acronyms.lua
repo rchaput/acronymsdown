@@ -107,7 +107,7 @@ function Acronyms:add(acronym, on_duplicate)
             return
         elseif on_duplicate == "warn" then
             -- Warn, and do not replace.
-            warn("Duplicate key: " .. acronym.key)
+            warn("Duplicate key: ", acronym.key)
             return
         elseif on_duplicate == "error" then
             -- Stop execution.
@@ -159,7 +159,7 @@ function Acronyms:parseFromYamlFile(filepath, on_duplicate)
     -- First, read the file's content.
     local file = io.open(filepath, "r")
     if file == nil then
-        warn("File " .. filepath .. " could not be read! (does not exist?)")
+        warn("File ", filepath, " could not be read! (does not exist?)")
         return
     end
     local content = file:read("*a")
