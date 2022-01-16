@@ -84,7 +84,7 @@ add_filter <- function(error = TRUE) {
     )
 
     # Path to the Lua filter in this package
-    filter_path <- system.file("parse-acronyms.lua", package = "acronymsdown")
+    filter_path <- path_to_filter()
 
     args <- paste0("--lua-filter=", filter_path)
 

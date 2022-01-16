@@ -125,3 +125,44 @@ This order is meaningful in 2 cases:
   depends on the order in which acronyms are read.
 - When the `initial` sorting is used, the List Of Acronyms displays
   acronyms in the same order as they were defined.
+
+## Integrating acronymsdown in custom formats
+
+The simplest way to use **acronymsdown** is to add it to the list of
+Pandoc arguments, using the `pandoc_args: !expr acronymsdown::add_filter`
+syntax.
+
+However, if you find this quite repetitive across multiple documents, or
+if you are developing a custom output format, you may want to add
+**acronymsdown** directly to the format's default options.
+
+As per the `rmarkdown` documentation (`vignette("lua-filters", "rmarkdown")`),
+this can be achieved by using a code similar to the following example:
+
+```r
+custom_format <- function(...) {
+  base_format <- rmarkdown::html_document(...)
+  # prepending a new Lua filter to html_document() ones
+  base_format$pandoc$lua_filters <- c(
+    acronymsdown::path_to_filter(),
+    base_format$pandoc$lua_filters
+  )
+  base_format
+}
+```
+
+In this example, the `rmarkdown::html_document` format was used as a base
+format.
+However, any output format may be used, as long as they were created
+"correctly", i.e., as long as `rmarkdown::is_output_format` returns `TRUE`
+for this format.
+
+A completely new format can be created in a similar fashion, instead of
+using a base format.
+The important point is to add `acronymsdown::path_to_filter()` to the list
+of Lua Filters, which can be done using the `rmarkdown::pandoc_options`
+function when creating a new format.
+
+Please refer to the `rmarkdown` documentation for more details, in
+particular `vignette("lua-filters", "rmarkdown")`, `?rmarkdown::output_format`,
+and `?rmarkdown::pandoc_options`.
