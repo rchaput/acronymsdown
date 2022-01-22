@@ -2,16 +2,21 @@ name: Automatic testing
 
 on:
   push:
-    branches: [master]
+    # Run on all branches, except gh-pages (as it is only for documentation)
+    branches-ignore: [gh-pages]
   workflow_dispatch:
 
 jobs:
   testing:
     runs-on: ubuntu-latest
     strategy:
+      # We want to test all combinations of the matrix
+      fail-fast: false
       matrix:
         R: [ '4.1.2' ]
-        pandoc: [ '2.16.2' ]
+        # In RStudio 1.5.114, the bundled pandoc is 2.11.4
+        pandoc: [ '2.11.4', '2.16.2', '2.17.0.1' ]
+    name: Testing R ${{ matrix.R }} - Pandoc ${{ matrix.pandoc }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
