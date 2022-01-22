@@ -25,7 +25,7 @@ along with their default values.
 acronyms:
   loa_title: "List of Acronyms"
   include_unused: true
-  insert_beginning: true
+  insert_loa: "beginning"
   insert_links: true
   id_prefix: "acronyms_"
   sorting: "alphabetical"
@@ -97,15 +97,15 @@ acronyms:
 ---
 ```
 
-## `insert_beginning`
+## `insert_loa`
 
 By default, **acronymsdown** generates a List Of Acronyms
 and automatically includes it for you at the beginning of the
 document, i.e., as the first block.
 
 Depending on your desired document structure, that behaviour
-might not be wanted. In this case, this option can be used to
-disable it.
+might not be wanted. This option allows you to insert it automatically
+at the end, or even to not insert it automatically.
 
 If you still want to make **acronymsdown** automatically
 generate a List Of Acronyms, but to insert it somewhere else
@@ -122,15 +122,34 @@ Otherwise, it will not be recognized.
 
 *Examples*:
 
+To insert it automatically at the beginning: (the default)
+```yaml
+---
+acronyms:
+  insert_loa: "beginning"
+---
+```
+
+To insert it automatically at the end:
+```yaml
+---
+acronyms:
+  insert_loa: "end"
+---
+```
+
 To disable the automatic insertion of the List Of Acronyms:
 ```yaml
 ---
 acronyms:
-  insert_beginning: false
+  insert_loa: false
 ---
 ```
 
-To generate and insert the List Of Acronyms where you want:
+*Note*: if you disable the automatic insertion, you must either:
+
+- Insert the LoA manually somewhere in your document by using `\printacronyms`.
+
 ```md
 Some text for demonstration...
 
@@ -139,6 +158,18 @@ Some text for demonstration...
 And some text after. Note that nothing else is in the same
 paragraph as `\printacronyms`.
 ```
+
+- Disable the insertion of links using the [insert_links](#insert_links) option.
+```yaml
+---
+acronyms:
+  insert_loa: false
+  insert_links: false
+---
+```
+
+Otherwise, **acronymsdown** will try to link the acronyms with their
+definition in the List Of Acronyms... which does not exist!
 
 ## `insert_links`
 
