@@ -1,0 +1,22 @@
+---
+output:
+  md_document:
+    pandoc_args:
+      - !expr acronymsdown::add_filter()
+      - --wrap=preserve
+    variant: markdown
+acronyms:
+  # You can insert the List Of Acronyms anywhere you want with `\printacronyms`
+  insert_loa: false
+  keys:
+    - shortname: RL
+      longname: Reinforcement Learning
+---
+
+# Introduction {#intro}
+
+This paragraph mentions \acr{RL} for the first time.
+
+\printacronyms
+
+And now, in this paragraph, \acr{RL} is in short form.

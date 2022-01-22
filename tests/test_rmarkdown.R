@@ -38,7 +38,10 @@ folders <- c(
   "09-style-footnote",
   "10-no-links",
   "11-missing-key",
-  "12-missing-unknown"
+  "12-missing-unknown",
+  "13-insert-loa-end",
+  "14-insert-loa-false",
+  "15-insert-loa-false-printacronyms"
 )
 
 for (folder in folders) {
