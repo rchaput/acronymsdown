@@ -19,4 +19,7 @@ tests:
 site:
 	R -q -e "library(pkgdown); pkgdown::build_site()"
 
+lib:
+	R CMD SHLIB dup2_helper.c
+
 .PHONY: tests
