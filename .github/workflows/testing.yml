@@ -40,11 +40,11 @@ jobs:
         with:
           extra-packages: testthat, devtools
 
-      - name: Run R CMD CHECK
-        run: make check
-
       - name: Build and install package
         run: make doc build install
 
       - name: Run automatic tests
         run: make tests
+
+      - name: Run R CMD CHECK
+        run: make check
