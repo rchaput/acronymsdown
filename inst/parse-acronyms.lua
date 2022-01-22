@@ -49,7 +49,7 @@ function warn(...)
         t[i] = tostring(t[i])
     end
     local msg = table.concat(t, "")
-    io.write("[WARNING][acronymsdown] ", msg, "\n")
+    io.stderr:write("[WARNING][acronymsdown] ", msg, "\n")
 end
 
 
