@@ -137,8 +137,12 @@ function parseOptionsFromMetadata(m)
         options["include_unused"] = true
     end
 
-    if options["insert_beginning"] == nil then
-        options["insert_beginning"] = true
+    if options["insert_loa"] == false then
+        -- Do nothing (keep `insert_loa` = false)
+    elseif options["insert_loa"] == nil then
+        options["insert_loa"] = "beginning"
+    else
+        options["insert_loa"] = pandoc.utils.stringify(options["insert_loa"])
     end
 
     if options["non_existing"] == nil then
@@ -205,19 +209,29 @@ end
 Append the List Of Acronyms to the document (at the beginning).
 --]]
 function appendLoA(doc)
-    -- If disabled, do nothing
-    if not options["insert_beginning"] then
+    local pos
+    if not options["insert_loa"] then
+        -- If disabled, do nothing
         return nil
+    elseif options["insert_loa"] == "beginning" then
+        -- Insert at the first block in the document
+        pos = 1
+    elseif options["insert_loa"] == "end" then
+        -- Insert at the last block in the document
+        pos = #doc.blocks + 1
+    else
+        error("Unrecognized option insert_loa="
+                .. tostring(options["insert_loa"]))
     end
 
     local header, definition_list = generateLoA()
 
     -- Insert the DefinitionList
-    table.insert(doc.blocks, 1, definition_list)
+    table.insert(doc.blocks, pos, definition_list)
 
     -- Insert the Header
     if header ~= nil then
-        table.insert(doc.blocks, 1, header)
+        table.insert(doc.blocks, pos, header)
     end
 
     return pandoc.Pandoc(doc.blocks, doc.meta)
