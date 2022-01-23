@@ -59,7 +59,7 @@ function isMetaList(field)
     -- Pandoc 2.17 introduced a compatibility-breaking change for this:
     --  the `.tag` is no longer present in >= 2.17 ;
     --  the `pandoc.utils.type` function is only available in >= 2.17
-    if tostring(PANDOC_VERSION) >= "2.17" then
+    if PANDOC_VERSION ~= nil and tostring(PANDOC_VERSION) >= "2.17" then
         -- Use the new `pandoc.utils.type` function
         return pandoc.utils.type(field) == "List"
     else

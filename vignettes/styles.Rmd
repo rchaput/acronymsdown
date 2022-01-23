@@ -28,7 +28,7 @@ acronyms:
     - shortname: Rmd
       longname: RMarkdown document
   style: <STYLE>
-  insert_beginning: false
+  insert_loa: false
   insert_links: false
 ---
 First use: \acr{Rmd}
@@ -53,7 +53,7 @@ acronyms:
     - shortname: Rmd
       longname: RMarkdown document
   style: $1
-  insert_beginning: false
+  insert_loa: false
   insert_links: false
 ---
 First use: \acr{Rmd}
