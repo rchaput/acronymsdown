@@ -1,7 +1,7 @@
 Package: acronymsdown
 Type: Package
 Title: Acronyms and Glossaries Support for RMarkdown
-Version: 0.9.1
+Version: 0.10.0
 Author: Remy Chaput
 Maintainer: remy chaput <rchaput.pro@gmail.com>
 Description: Adds support for list of acronyms (or glossaries) for RMarkdown
