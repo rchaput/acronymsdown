@@ -53,6 +53,22 @@ function warn(...)
 end
 
 
+-- Helper function to determine whether a metadata field is a list.
+function isMetaList(field)
+    -- We want to know whether we have multiple values (MetaList).
+    -- Pandoc 2.17 introduced a compatibility-breaking change for this:
+    --  the `.tag` is no longer present in >= 2.17 ;
+    --  the `pandoc.utils.type` function is only available in >= 2.17
+    if tostring(PANDOC_VERSION) >= "2.17" then
+        -- Use the new `pandoc.utils.type` function
+        return pandoc.utils.type(field) == "List"
+    else
+        -- Use the (old) `.tag` type attribute
+        return field.t == "MetaList"
+    end
+end
+
+
 -- Helper function to generate the ID (identifier) from an acronym key.
 -- The ID can be used for, e.g., links.
 function key_to_id(key)
@@ -72,7 +88,7 @@ function Meta(m)
 
     -- Parse acronyms from external files
     if (m and m.acronyms and m.acronyms.fromfile) then
-        if m.acronyms.fromfile.t == "MetaList" then
+        if isMetaList(m.acronyms.fromfile) then
             -- We have several files to read
             for _, filepath in ipairs(m.acronyms.fromfile) do
                 filepath = pandoc.utils.stringify(filepath)
@@ -302,5 +318,5 @@ return {
     { Meta = Meta },
     { RawInline = replaceAcronym },
     { RawBlock = RawBlock },
-    { Doc = appendLoA },
+    { Pandoc = appendLoA },
 }

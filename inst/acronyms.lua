@@ -126,12 +126,14 @@ end
 -- Populate the Acronyms database from a YAML metadata
 function Acronyms:parseFromMetadata(metadata, on_duplicate)
     -- We expect the acronyms to be in the `metadata.acronyms.keys` field.
-    -- This field should be a Pandoc "MetaList" (so we can iter over it).
-    if not (metadata and metadata.acronyms and metadata.acronyms.keys
-        and metadata.acronyms.keys.t == "MetaList") then
+    if not (metadata and metadata.acronyms and metadata.acronyms.keys) then
         return
     end
-    
+    -- This field should be a Pandoc "MetaList" (so we can iter over it).
+    if not isMetaList(metadata.acronyms.keys) then
+        error("The acronyms.keys should be a list!")
+    end
+
     -- Iterate over the defined acronyms. We use `ipairs` since we want to
     -- keep their original order (useful for the `definition_order`!).
     for _, v in ipairs(metadata.acronyms.keys) do
