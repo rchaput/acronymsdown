@@ -22,6 +22,9 @@ jobs:
           cd /tmp
           zip -r acronymsdown.zip acronymsdown/
 
+      - name: Create R Package
+        run: make doc build
+
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -30,10 +33,9 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           release_name: Release ${{ github.ref_name }}
-          # FIXME: get the tag's message (or use generate_release_notes?)
           body: ""
 
-      - name: Upload artifact
+      - name: Upload Pandoc artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,3 +44,13 @@ jobs:
           asset_path: /tmp/acronymsdown.zip
           asset_name: acronymsdown-pandoc.zip
           asset_content_type: application/zip
+
+      - name: Upload R artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.oututs.upload_url }}
+          asset_path: acronymsdown_*.tar.gz
+          asset_name: acronymsdown-R.tar.gz
+          asset_content_type: application/gzip
