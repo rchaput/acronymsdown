@@ -2,6 +2,12 @@
 
 > Author: rchaput <rchaput.pro@gmail.com>
 
+![GitHub License](https://img.shields.io/github/license/rchaput/acronymsdown)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/rchaput/acronymsdown?display_name=tag&label=last%20release&logo=github&sort=semver)
+![GitHub Release Date](https://img.shields.io/github/release-date/rchaput/acronymsdown?label=last%20release%20date&logo=github)
+![GitHub Workflow testing Status](https://github.com/rchaput/acronymsdown/actions/workflows/testing.yml/badge.svg)
+![GitHub Workflow pkgdown Status](https://img.shields.io/github/workflow/status/rchaput/acronymsdown/pkgdown?label=Documentation&logo=github)
+
 ## Description
 
 This package adds the ability to automatically handle acronyms
