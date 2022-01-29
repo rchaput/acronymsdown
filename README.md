@@ -86,6 +86,7 @@ acronyms:
       longname: RMarkdown
     - shortname: YAML
       longname: YAML Ain't Markup Language
+---
 ```
 
 3. And finally, use your acronyms in your Rmd document with the `\acr{<KEY>}`
@@ -105,11 +106,11 @@ examples of various configurations.
 Each of the sub-directories is a specific example, where the `input.Rmd` is
 the source Rmd document, and `expected.md` is the expected result.
 
-**Q: This Readme shows an example of the `pdf_document` output format,
-and the tests use `md_document`, are other formats available?**
+**Q: Which output formats are available?**
 
 A: As long as it is possible to inject custom Pandoc arguments in the
 output format, **acronymsdown** will work.
+
 In particular, one can use the [bookdown] formats, with something like:
 ```yaml
 ---
@@ -128,22 +129,7 @@ A: This package's features are actually implemented in a Pandoc
 [Lua Filter], which means it can be used in "pure" Pandoc,
 without requiring to use RMarkdown.
 
-To do so, simply pass the additional arguments directly to Pandoc:
-```sh
-pandoc --lua-filter /path/to/parse-acronyms.lua input.md
-```
-where `/path/to/parse-acronyms.lua` is the path to the [parse-acronyms.lua] 
-script.
-
-If the **acronymsdown** package is installed, you can use the R method
-`system.file("parse-acronyms.lua", package = "acronymsdown")` to get the
-path to this file on your system.
-
-You can also download the Lua files (in the [inst/] folder) directly, 
-and store them in a convenient location on your system.
-Note: you must download *all* Lua files and store them in the same folder!
-Otherwise, Lua will raise an error. The "main" script, which must be loaded
-by Pandoc, is `parse-acronyms.lua`.
+Please refer to `vignette("advanced_usage")` for details.
 
 ## Credits
 

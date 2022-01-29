@@ -103,7 +103,7 @@ acronyms:
 ---
 ```
 
-Please note that this format is not really YAML~; instead, the files are
+Please note that this format is not really YAML ; instead, the files are
 read as Markdown documents themselves, hence the presence of the `---`
 fences.
 
@@ -166,3 +166,48 @@ function when creating a new format.
 Please refer to the `rmarkdown` documentation for more details, in
 particular `vignette("lua-filters", "rmarkdown")`, `?rmarkdown::output_format`,
 and `?rmarkdown::pandoc_options`.
+
+## Using acronymsdown with only Pandoc / without RMarkdown
+
+**acronymsdown** is implemented using a Pandoc [Lua Filter], whereas the R
+package is provided as a "simple" wrapper to facilitate using this filter.
+
+This means that R (and by extension RMarkdown) are not necessary to use
+**acronymsdown**, although they make it easier.
+
+To run **acronymsdown** through Pandoc only, please follow these steps:
+
+1. Make sure that Pandoc is available on your system, either by using your
+  distribution's package manager, or by downloading manually one of their
+  [releases](https://github.com/jgm/pandoc/releases).
+  *Note*: the bare minimum requirement is version 2.0, however **acronymsdown**
+  might not work on old versions. To avoid bugs, please use a recent version.
+
+2. Make sure that **acronymsdown**'s Lua files (from the [inst/] folder) are
+  available and readable. To do so, 2 options are available:
+
+    a. If the R package is installed on your system, the Lua files are already
+      included. To get the path to the filter (`/path/to/parse-acronyms.lua`),
+      you may use the R method `acronymsdown::path_to_filter()`.
+      Please note this path, you will need it in the next step.
+
+    b. You may also download the `acronymsdown-pandoc.zip` archive from one
+      of our [releases](https://github.com/rchaput/acronymsdown/releases/),
+      which contains these files, and unzip it to a convenient location.
+      Please remember this location, you will need it in the next step.
+
+3. Execute Pandoc and pass the additional arguments to it:
+```sh
+pandoc --lua-filter /path/to/parse-acronyms.lua input.md
+```
+where `/path/to/parse-acronyms.lua` is the path to the `parse-acronyms.lua`
+file, according to your installation method, and `input.md` is the document
+you want to parse.
+
+*Note*: *all* the Lua files from the [inst/] folder must be available
+on your system, in the same folder! The "main" script, `parse-acronyms.lua`,
+which must be loaded by Pandoc, relies on them and will not work if they
+are not in the same folder.
+
+[Lua Filter]: https://pandoc.org/lua-filters.html
+[inst/]: https://github.com/rchaput/acronymsdown/tree/master/inst
