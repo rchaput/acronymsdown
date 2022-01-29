@@ -6,7 +6,8 @@ articles:
   advanced_usage: advanced_usage.html
   options: options.html
   styles: styles.html
-last_built: 2022-01-29T16:13Z
+  version_compatibility: version_compatibility.html
+last_built: 2022-01-29T20:12Z
 urls:
   reference: https://rchaput.github.io/acronymsdown/reference
   article: https://rchaput.github.io/acronymsdown/articles
