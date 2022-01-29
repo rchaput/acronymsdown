@@ -1,0 +1,53 @@
+---
+title: "Version compatibility"
+description: >
+  See which versions of R and Pandoc are compatible with acronymsdown.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Version compatibility}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Each version of **acronymsdown** is tested against several versions of
+R and Pandoc to ensure all the features are correctly working.
+
+The following image summarizes the current compatibility:
+![Version compatibility](https://github-actions.40ants.com/rchaput/acronymsdown/matrix.svg?only=Automatic%20testing)
+
+## Notes on Pandoc versions
+
+Lua Filters are available in Pandoc since the 2.0 version, thus **acronymsdown**
+requires this version as a bare minimum.
+
+However, the various versions of Pandoc since then have introduced changes,
+more or less breaking compatibility.
+For a better experience, and whenever possible, it is recommended to use
+one of the most recent versions of Pandoc.
+
+For example, Pandoc before 2.11.2 used a different syntax for headings
+(`Setext`), which makes our tests fail, as we expect the `ATX` syntax (more
+standard, and default since 2.11.2).
+The `--atx-headers` option can be used in versions < 2.11.2, however it is
+deprecated since 2.11.2, and we prefer not to use it in our tests to not
+clutter the results with warnings.
+
+Thus, versions before 2.11.2 are not automatically tested with **acronymsdown**.
+They may work, but are not recommended.
+
+Additionally, as RStudio provides its own version of Pandoc (bundled), and
+most RMarkdown users will rely on RStudio, we also test for the same version.
+Thus, RStudio users should be able to assume that **acronymsdown** will work
+on their system without having to download another version of Pandoc.
+
+## Test details
+
+The [tests](https://github.com/rchaput/acronymsdown/tree/master/tests) are
+implemented as a set of folders (one for each test), which all contain:
+
+- an `input.Rmd` Markdown document, which uses the feature we wish to test ;
+- an `expected.md` document, which describes the expected result when passing
+  the `input.Rmd` through Pandoc.
+
+The automated tests use RMarkdown to render each of the `input.Rmd` files,
+and compare the results to the `expected.md` document, for each test.

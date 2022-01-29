@@ -16,3 +16,5 @@ navbar:
         - text: -------
         - text: Advanced usage
           href: articles/advanced_usage.html
+        - text: Version compatibility
+          href: articles/version_compatibility.html
