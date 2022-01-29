@@ -14,7 +14,7 @@ install:
 	R -q -e "library(devtools); install()"
 
 tests:
-	cd tests/ && Rscript testthat.R
+	R -q -e "testthat::test_file('tests/test_rmarkdown.R', stop_on_failure = TRUE)"
 
 site:
 	R -q -e "library(pkgdown); pkgdown::build_site()"
