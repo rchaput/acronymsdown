@@ -148,7 +148,8 @@
 <span id="cb3-4"><a href="#cb3-4"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">shortname</span><span class="kw">:</span><span class="at"> Rmd</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="at">      </span><span class="fu">longname</span><span class="kw">:</span><span class="at"> RMarkdown</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">shortname</span><span class="kw">:</span><span class="at"> YAML</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="at">      </span><span class="fu">longname</span><span class="kw">:</span><span class="at"> YAML Ain't Markup Language</span></span></code></pre></div>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="at">      </span><span class="fu">longname</span><span class="kw">:</span><span class="at"> YAML Ain't Markup Language</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="pp">---</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>And finally, use your acronyms in your Rmd document with the <code>\acr{&lt;KEY&gt;}</code> special command!</li>
 </ol>
@@ -160,8 +161,9 @@
 </h2>
 <p><strong>Q: Are there any examples on how to use this?</strong></p>
 <p>A: The <a href="https://github.com/rchaput/acronymsdown/tree/master/tests" class="external-link">automated tests</a> are designed as Rmd documents which also serve as examples of various configurations. Each of the sub-directories is a specific example, where the <code>input.Rmd</code> is the source Rmd document, and <code>expected.md</code> is the expected result.</p>
-<p><strong>Q: This Readme shows an example of the <code>pdf_document</code> output format, and the tests use <code>md_document</code>, are other formats available?</strong></p>
-<p>A: As long as it is possible to inject custom Pandoc arguments in the output format, <strong>acronymsdown</strong> will work. In particular, one can use the <a href="https://bookdown.org/" class="external-link">bookdown</a> formats, with something like:</p>
+<p><strong>Q: Which output formats are available?</strong></p>
+<p>A: As long as it is possible to inject custom Pandoc arguments in the output format, <strong>acronymsdown</strong> will work.</p>
+<p>In particular, one can use the <a href="https://bookdown.org/" class="external-link">bookdown</a> formats, with something like:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1"></a><span class="pp">---</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="fu">output</span><span class="kw">:</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="at">  bookdown:</span><span class="fu">:gitbook</span><span class="kw">:</span></span>
@@ -170,11 +172,7 @@
 <p>Of course, <code>bookdown::gitbook:</code> can be replaced by <code>bookdoown::pdf_book:</code>, <code>bookdown::html_book:</code>, or even other formats from other packages.</p>
 <p><strong>Q: Can I use this without RMarkdown?</strong></p>
 <p>A: This package’s features are actually implemented in a Pandoc <a href="https://pandoc.org/lua-filters.html" class="external-link">Lua Filter</a>, which means it can be used in “pure” Pandoc, without requiring to use RMarkdown.</p>
-<p>To do so, simply pass the additional arguments directly to Pandoc:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="ex">pandoc</span> --lua-filter /path/to/parse-acronyms.lua input.md</span></code></pre></div>
-<p>where <code>/path/to/parse-acronyms.lua</code> is the path to the <a href="https://github.com/rchaput/acronymsdown/blob/master/inst/parse-acronyms.lua" class="external-link">parse-acronyms.lua</a> script.</p>
-<p>If the <strong>acronymsdown</strong> package is installed, you can use the R method <code>system.file("parse-acronyms.lua", package = "acronymsdown")</code> to get the path to this file on your system.</p>
-<p>You can also download the Lua files (in the <a href="https://github.com/rchaput/acronymsdown/tree/master/inst" class="external-link">inst/</a> folder) directly, and store them in a convenient location on your system. Note: you must download <em>all</em> Lua files and store them in the same folder! Otherwise, Lua will raise an error. The “main” script, which must be loaded by Pandoc, is <code>parse-acronyms.lua</code>.</p>
+<p>Please refer to <code><a href="articles/advanced_usage.html">vignette("advanced_usage")</a></code> for details.</p>
 </div>
 <div class="section level2">
 <h2 id="credits">Credits<a class="anchor" aria-label="anchor" href="#credits"></a>

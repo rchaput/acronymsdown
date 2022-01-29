@@ -136,7 +136,7 @@
 <span id="cb5-5"><a href="#cb5-5"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">shortname</span><span class="kw">:</span><span class="at"> Rmd</span></span>
 <span id="cb5-6"><a href="#cb5-6"></a><span class="at">      </span><span class="fu">longname</span><span class="kw">:</span><span class="at"> RMarkdown document</span></span>
 <span id="cb5-7"><a href="#cb5-7"></a><span class="pp">---</span></span></code></pre></div>
-<p>Please note that this format is not really YAML~; instead, the files are read as Markdown documents themselves, hence the presence of the <code>---</code> fences.</p>
+<p>Please note that this format is not really YAML ; instead, the files are read as Markdown documents themselves, hence the presence of the <code>---</code> fences.</p>
 <p>However, only the metadata and more specifically the <code>acronyms.keys</code> field is used. No other option is taken into account. The eventual document body is ignored as well.</p>
 <p>The acronyms are read in the following order:</p>
 <ol style="list-style-type: decimal">
@@ -153,6 +153,47 @@
 <li>When a duplicate key is found, the behaviour (<code>keep</code> or <code>replace</code>) depends on the order in which acronyms are read.</li>
 <li>When the <code>initial</code> sorting is used, the List Of Acronyms displays acronyms in the same order as they were defined.</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="integrating-acronymsdown-in-custom-formats">Integrating acronymsdown in custom formats<a class="anchor" aria-label="anchor" href="#integrating-acronymsdown-in-custom-formats"></a>
+</h2>
+<p>The simplest way to use <strong>acronymsdown</strong> is to add it to the list of Pandoc arguments, using the <code>pandoc_args: !expr acronymsdown::add_filter</code> syntax.</p>
+<p>However, if you find this quite repetitive across multiple documents, or if you are developing a custom output format, you may want to add <strong>acronymsdown</strong> directly to the format’s default options.</p>
+<p>As per the <code>rmarkdown</code> documentation (<code><a href="https://pkgs.rstudio.com/rmarkdown/articles/lua-filters.html" class="external-link">vignette("lua-filters", "rmarkdown")</a></code>), this can be achieved by using a code similar to the following example:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">custom_format</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">base_format</span> <span class="op">&lt;-</span> <span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/html_document.html" class="external-link">html_document</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>
+  <span class="co"># prepending a new Lua filter to html_document() ones</span>
+  <span class="va">base_format</span><span class="op">$</span><span class="va">pandoc</span><span class="op">$</span><span class="va">lua_filters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
+    <span class="fu">acronymsdown</span><span class="fu">::</span><span class="fu"><a href="../reference/path_to_filter.html">path_to_filter</a></span><span class="op">(</span><span class="op">)</span>,
+    <span class="va">base_format</span><span class="op">$</span><span class="va">pandoc</span><span class="op">$</span><span class="va">lua_filters</span>
+  <span class="op">)</span>
+  <span class="va">base_format</span>
+<span class="op">}</span></code></pre></div>
+<p>In this example, the <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/html_document.html" class="external-link">rmarkdown::html_document</a></code> format was used as a base format. However, any output format may be used, as long as they were created “correctly”, i.e., as long as <code>rmarkdown::is_output_format</code> returns <code>TRUE</code> for this format.</p>
+<p>A completely new format can be created in a similar fashion, instead of using a base format. The important point is to add <code><a href="../reference/path_to_filter.html">acronymsdown::path_to_filter()</a></code> to the list of Lua Filters, which can be done using the <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/pandoc_options.html" class="external-link">rmarkdown::pandoc_options</a></code> function when creating a new format.</p>
+<p>Please refer to the <code>rmarkdown</code> documentation for more details, in particular <code><a href="https://pkgs.rstudio.com/rmarkdown/articles/lua-filters.html" class="external-link">vignette("lua-filters", "rmarkdown")</a></code>, <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/output_format.html" class="external-link">?rmarkdown::output_format</a></code>, and <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/pandoc_options.html" class="external-link">?rmarkdown::pandoc_options</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="using-acronymsdown-with-only-pandoc-without-rmarkdown">Using acronymsdown with only Pandoc / without RMarkdown<a class="anchor" aria-label="anchor" href="#using-acronymsdown-with-only-pandoc-without-rmarkdown"></a>
+</h2>
+<p><strong>acronymsdown</strong> is implemented using a Pandoc <a href="https://pandoc.org/lua-filters.html" class="external-link">Lua Filter</a>, whereas the R package is provided as a “simple” wrapper to facilitate using this filter.</p>
+<p>This means that R (and by extension RMarkdown) are not necessary to use <strong>acronymsdown</strong>, although they make it easier.</p>
+<p>To run <strong>acronymsdown</strong> through Pandoc only, please follow these steps:</p>
+<ol style="list-style-type: decimal">
+<li><p>Make sure that Pandoc is available on your system, either by using your distribution’s package manager, or by downloading manually one of their <a href="https://github.com/jgm/pandoc/releases" class="external-link">releases</a>. <em>Note</em>: the bare minimum requirement is version 2.0, however <strong>acronymsdown</strong> might not work on old versions. To avoid bugs, please use a recent version.</p></li>
+<li>
+<p>Make sure that <strong>acronymsdown</strong>’s Lua files (from the <a href="https://github.com/rchaput/acronymsdown/tree/master/inst" class="external-link">inst/</a> folder) are available and readable. To do so, 2 options are available:</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>If the R package is installed on your system, the Lua files are already included. To get the path to the filter (<code>/path/to/parse-acronyms.lua</code>), you may use the R method <code><a href="../reference/path_to_filter.html">acronymsdown::path_to_filter()</a></code>. Please note this path, you will need it in the next step.</p></li>
+<li><p>You may also download the <code>acronymsdown-pandoc.zip</code> archive from one of our <a href="https://github.com/rchaput/acronymsdown/releases/" class="external-link">releases</a>, which contains these files, and unzip it to a convenient location. Please remember this location, you will need it in the next step.</p></li>
+</ol>
+</li>
+<li><p>Execute Pandoc and pass the additional arguments to it:</p></li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">pandoc</span> --lua-filter /path/to/parse-acronyms.lua input.md</span></code></pre></div>
+<p>where <code>/path/to/parse-acronyms.lua</code> is the path to the <code>parse-acronyms.lua</code> file, according to your installation method, and <code>input.md</code> is the document you want to parse.</p>
+<p><em>Note</em>: <em>all</em> the Lua files from the <a href="https://github.com/rchaput/acronymsdown/tree/master/inst" class="external-link">inst/</a> folder must be available on your system, in the same folder! The “main” script, <code>parse-acronyms.lua</code>, which must be loaded by Pandoc, relies on them and will not work if they are not in the same folder.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
