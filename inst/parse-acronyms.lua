@@ -52,6 +52,28 @@ function warn(...)
     io.stderr:write("[WARNING][acronymsdown] ", msg, "\n")
 end
 
+-- Helper function to determine pandoc's version.
+-- `version` must be a table of numbers, e.g., `{2, 17, 0, 1}`
+function isAtLeastVersion(version)
+    -- `PANDOC_VERSION` exists since 2.1, but we never know...
+    if PANDOC_VERSION == nil then
+        return false
+    end
+    -- Loop up over the components
+    -- e.g., `2.17.0.1` => [0]=2, [1]=17, [2]=0, [3]=1
+    for k, v in ipairs(version) do
+        if PANDOC_VERSION[k] == nil or PANDOC_VERSION[k] < version[k] then
+            -- Examples: 2.17 < 2.17.0.1, or 2.16 < 2.17
+            return false
+        elseif PANDOC_VERSION[k] > version[k] then
+            -- Example: 2.17 > 2.16.2 (we do not need to check the next!)
+            return true
+        end
+    end
+    -- At this point, all components are equal
+    return true
+end
+
 
 -- Helper function to determine whether a metadata field is a list.
 function isMetaList(field)
@@ -59,7 +81,7 @@ function isMetaList(field)
     -- Pandoc 2.17 introduced a compatibility-breaking change for this:
     --  the `.tag` is no longer present in >= 2.17 ;
     --  the `pandoc.utils.type` function is only available in >= 2.17
-    if PANDOC_VERSION ~= nil and tostring(PANDOC_VERSION) >= "2.17" then
+    if isAtLeastVersion({2, 17}) then
         -- Use the new `pandoc.utils.type` function
         return pandoc.utils.type(field) == "List"
     else
