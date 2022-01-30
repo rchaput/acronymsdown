@@ -13,6 +13,17 @@ jobs:
       - name: Checkout the source code
         uses: actions/checkout@v2
 
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 4.1.2
+          use-public-rspm: true
+
+      - name: Download dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: devtools
+
       - name: Zip the Lua files
         # We want the top-level directory to be "acronymsdown",
         # instead of "inst". So we first copy the files to a new directory.
@@ -26,31 +37,9 @@ jobs:
         run: make doc build
 
       - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          body: ""
-
-      - name: Upload Pandoc artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /tmp/acronymsdown.zip
-          asset_name: acronymsdown-pandoc.zip
-          asset_content_type: application/zip
-
-      - name: Upload R artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.oututs.upload_url }}
-          asset_path: acronymsdown_*.tar.gz
-          asset_name: acronymsdown-R.tar.gz
-          asset_content_type: application/gzip
+          name: Release ${{ github.ref_name }}
+          files: |
+            ./acronysmdown_*.tar.gz
+            /tmp/acronymsdown.zip
