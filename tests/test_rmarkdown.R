@@ -41,7 +41,11 @@ folders <- c(
   "12-missing-unknown",
   "13-insert-loa-end",
   "14-insert-loa-false",
-  "15-insert-loa-false-printacronyms"
+  "15-insert-loa-false-printacronyms",
+  "16-not-include-unused",
+  "17-sorting-alphabetical",
+  "18-sorting-initial",
+  "19-sorting-usage"
 )
 
 for (folder in folders) {

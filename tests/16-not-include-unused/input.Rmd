@@ -1,0 +1,19 @@
+---
+output:
+  md_document:
+    pandoc_args:
+      - !expr acronymsdown::add_filter()
+      - --wrap=preserve
+    variant: markdown
+acronyms:
+  include_unused: false
+  keys:
+    - shortname: RL
+      longname: Reinforcement Learning
+    - shortname: MORL
+      longname: Multi-Objective Reinforcement Learning
+---
+
+# Introduction {#intro}
+
+This paragraph mentions \acr{RL} for the first time.
