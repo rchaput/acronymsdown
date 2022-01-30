@@ -200,7 +200,9 @@ function generateLoA()
     -- Original idea from https://gist.github.com/RLesur/e81358c11031d06e40b8fef9fdfb2682
 
     -- We first get the list of sorted acronyms, according to the defined criteria.
-    local sorted = sortAcronyms(Acronyms.acronyms, options["sorting"])
+    local sorted = sortAcronyms(Acronyms.acronyms,
+            options["sorting"],
+            options["include_unused"])
 
     -- Create the table that represents the DefinitionList
     local definition_list = {}
