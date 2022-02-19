@@ -25,16 +25,6 @@ more or less breaking compatibility.
 For a better experience, and whenever possible, it is recommended to use
 one of the most recent versions of Pandoc.
 
-For example, Pandoc before 2.11.2 used a different syntax for headings
-(`Setext`), which makes our tests fail, as we expect the `ATX` syntax (more
-standard, and default since 2.11.2).
-The `--atx-headers` option can be used in versions < 2.11.2, however it is
-deprecated since 2.11.2, and we prefer not to use it in our tests to not
-clutter the results with warnings.
-
-Thus, versions before 2.11.2 are not automatically tested with **acronymsdown**.
-They may work, but are not recommended.
-
 Additionally, as RStudio provides its own version of Pandoc (bundled), and
 most RMarkdown users will rely on RStudio, we also test for the same version.
 Thus, RStudio users should be able to assume that **acronymsdown** will work
@@ -51,3 +41,17 @@ implemented as a set of folders (one for each test), which all contain:
 
 The automated tests use RMarkdown to render each of the `input.Rmd` files,
 and compare the results to the `expected.md` document, for each test.
+
+The tests rely on our custom output format, `acronymsdown::md_format` to
+ensure reliable results (for example, that all headings use the ATX syntax).
+However, **acronymsdown** works with most output formats.
+
+You may use `acronymsdown::md_format` if you wish to produce Markdown files,
+but be warned that this format includes some opinionated choices (such as
+the ATX headings aforementioned).
+To control every aspect of the document production, it is advised to use
+a more basic format, such as `rmarkdown::md_document`, and to specify the
+various parameters.
+Another option would be to create another custom format, as advised in
+`vignette("advanced_usage")`. In this case, you may read our
+`acronymsdown::md_format` as an example of custom format.
