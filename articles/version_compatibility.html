@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">acronymsdown</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,8 +92,6 @@
 </h2>
 <p>Lua Filters are available in Pandoc since the 2.0 version, thus <strong>acronymsdown</strong> requires this version as a bare minimum.</p>
 <p>However, the various versions of Pandoc since then have introduced changes, more or less breaking compatibility. For a better experience, and whenever possible, it is recommended to use one of the most recent versions of Pandoc.</p>
-<p>For example, Pandoc before 2.11.2 used a different syntax for headings (<code>Setext</code>), which makes our tests fail, as we expect the <code>ATX</code> syntax (more standard, and default since 2.11.2). The <code>--atx-headers</code> option can be used in versions &lt; 2.11.2, however it is deprecated since 2.11.2, and we prefer not to use it in our tests to not clutter the results with warnings.</p>
-<p>Thus, versions before 2.11.2 are not automatically tested with <strong>acronymsdown</strong>. They may work, but are not recommended.</p>
 <p>Additionally, as RStudio provides its own version of Pandoc (bundled), and most RMarkdown users will rely on RStudio, we also test for the same version. Thus, RStudio users should be able to assume that <strong>acronymsdown</strong> will work on their system without having to download another version of Pandoc.</p>
 </div>
 <div class="section level2">
@@ -105,6 +103,8 @@
 <li>an <code>expected.md</code> document, which describes the expected result when passing the <code>input.Rmd</code> through Pandoc.</li>
 </ul>
 <p>The automated tests use RMarkdown to render each of the <code>input.Rmd</code> files, and compare the results to the <code>expected.md</code> document, for each test.</p>
+<p>The tests rely on our custom output format, <code><a href="../reference/md_format.html">acronymsdown::md_format</a></code> to ensure reliable results (for example, that all headings use the ATX syntax). However, <strong>acronymsdown</strong> works with most output formats.</p>
+<p>You may use <code><a href="../reference/md_format.html">acronymsdown::md_format</a></code> if you wish to produce Markdown files, but be warned that this format includes some opinionated choices (such as the ATX headings aforementioned). To control every aspect of the document production, it is advised to use a more basic format, such as <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/md_document.html" class="external-link">rmarkdown::md_document</a></code>, and to specify the various parameters. Another option would be to create another custom format, as advised in <code><a href="../articles/advanced_usage.html">vignette("advanced_usage")</a></code>. In this case, you may read our <code><a href="../reference/md_format.html">acronymsdown::md_format</a></code> as an example of custom format.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
