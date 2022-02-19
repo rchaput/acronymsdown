@@ -1,10 +1,6 @@
 ---
 output:
-  md_document:
-    pandoc_args:
-      - !expr acronymsdown::add_filter()
-      - --wrap=preserve
-    variant: markdown
+  acronymsdown::md_format
 acronyms:
   style: short-long
   keys:
