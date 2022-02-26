@@ -43,6 +43,9 @@ jobs:
       - name: Build and install package
         run: make doc build install
 
+      - name: Compile shared library
+        run: make lib
+
       - name: Run automatic tests
         run: make tests
 

@@ -10,5 +10,8 @@
 # Package tarball
 acronymsdown_*.tar.gz
 
+# Shared library
+dup2_helper.so
+
 # Documentation (pkgdown)
 docs
