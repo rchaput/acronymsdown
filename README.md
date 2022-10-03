@@ -87,7 +87,7 @@ Using this package requires 3 simple steps:
 ```yaml
 ---
 acronyms:
-  key:
+  keys:
     - shortname: Rmd
       longname: RMarkdown
     - shortname: YAML
