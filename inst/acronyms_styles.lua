@@ -74,6 +74,18 @@ styles["short-long"] = function(acronym, insert_links)
     return create_element(text, acronym.key, insert_links)
 end
 
+-- First use: long name
+-- Next use: long name
+styles["long-long"] = function(acronym, insert_links)
+    local text
+    if acronym:isFirstUse() then
+        text = acronym.longname
+    else
+        text = acronym.longname
+    end
+
+    return create_element(text, acronym.key, insert_links)
+end
 
 -- First use: short name [^1]
 -- [^1]: short name: long name
