@@ -78,11 +78,7 @@ end
 -- Next use: long name
 styles["long-long"] = function(acronym, insert_links)
     local text
-    if acronym:isFirstUse() then
-        text = acronym.longname
-    else
-        text = acronym.longname
-    end
+    text = acronym.longname
 
     return create_element(text, acronym.key, insert_links)
 end
