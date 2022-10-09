@@ -9,8 +9,8 @@
     documents (and derivatives, such as bookdown, pagedown, ...).">
 <title>Acronyms and Glossaries Support for RMarkdown • acronymsdown</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Acronyms and Glossaries Support for RMarkdown">
 <meta property="og:description" content="Adds support for list of acronyms (or glossaries) for RMarkdown
@@ -75,9 +75,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="acronymsdown-list-of-acronyms-support-for-rmarkdown-documents">Acronymsdown: List of Acronyms support for RMarkdown documents<a class="anchor" aria-label="anchor" href="#acronymsdown-list-of-acronyms-support-for-rmarkdown-documents"></a>
 </h1></div>
-<blockquote>
-<p>Author: rchaput <a href="mailto:rchaput.pro@gmail.com" class="email">rchaput.pro@gmail.com</a></p>
-</blockquote>
+<blockquote><p>Author: rchaput <a href="mailto:rchaput.pro@gmail.com" class="email">rchaput.pro@gmail.com</a></p></blockquote>
 <p><img src="https://img.shields.io/github/license/rchaput/acronymsdown" alt="GitHub License"><img src="https://img.shields.io/github/v/release/rchaput/acronymsdown?display_name=tag&amp;label=last%20release&amp;logo=github&amp;sort=semver" alt="GitHub release (latest SemVer)"><img src="https://img.shields.io/github/release-date/rchaput/acronymsdown?label=last%20release%20date&amp;logo=github" alt="GitHub Release Date"><img src="https://github.com/rchaput/acronymsdown/actions/workflows/testing.yml/badge.svg" alt="GitHub Workflow testing Status"><img src="https://img.shields.io/github/workflow/status/rchaput/acronymsdown/pkgdown?label=Documentation&amp;logo=github" alt="GitHub Workflow pkgdown Status"></p>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
@@ -91,26 +89,18 @@
 </h2>
 <ul>
 <li>Tired of manually having to check whether the first occurrence of an acronym is correctly explained to your readers? <strong>acronymsdown</strong> automatically replaces acronyms, based on whether they appear for the first time.</li>
-<li>Generate a List of Acronyms based on your defined acronyms.
-<ul>
-<li>The place where this list will be generated can be specified (by default, at the beginning of the document).</li>
-</ul>
+<li>Generate a List of Acronyms based on your defined acronyms.<ul><li>The place where this list will be generated can be specified (by default, at the beginning of the document).</li></ul>
 </li>
-<li>Automatic sorting of this list.
-<ul>
-<li>You can choose between the <em>alphabetical</em>, <em>usage</em> or <em>initial</em> order.</li>
-</ul>
+<li>Automatic sorting of this list.<ul><li>You can choose between the <em>alphabetical</em>, <em>usage</em> or <em>initial</em> order.</li></ul>
 </li>
-<li>Easily manage acronyms
-<ul>
+<li>Easily manage acronyms<ul>
 <li>Choose between multiple styles to replace acronyms.</li>
 <li>By default, 1st occurrence is replaced by <em>long name (short name)</em>, and following occurrences are simply replaced by <em>short name</em>.</li>
 <li>All occurrences can also be linked to the acronym’s definition in the List of Acronyms.</li>
 </ul>
 </li>
 <li>Define acronyms directly in your document or in external files.</li>
-<li>Extensive configuration
-<ul>
+<li>Extensive configuration<ul>
 <li>Most of this package’s mechanisms can be configured: how to handle duplicate keys, whether to raise an error, print a warning or ignore an non-existing key, how to sort, …</li>
 <li>Sane defaults are included, such that this package can be used out-of-the-box.</li>
 </ul>
@@ -122,14 +112,14 @@
 </h2>
 <p>This package is only available on GitHub, you will therefore need to install <code>remotes</code> first:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Install the remotes package to install packages directly from GitHub</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
-<span class="co"># Now, install the acronymsdown package from GitHub</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rchaput/acronymsdown"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Install the remotes package to install packages directly from GitHub</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="co"># Now, install the acronymsdown package from GitHub</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"rchaput/acronymsdown"</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, you can also use <code>devtools</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rchaput/acronymsdown"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"rchaput/acronymsdown"</span><span class="op">)</span></span></code></pre></div>
 <p>Note that this package requires the <code>rmarkdown</code> package (which you should already have if you are writing Rmd documents).</p>
 <p>It also requires to have at least <a href="https://pandoc.org/" class="external-link">Pandoc</a> &gt;= “2.0”, either installed on your system or bundled with <a href="https://www.rstudio.com/" class="external-link">RStudio</a>.</p>
 </div>
@@ -137,24 +127,18 @@
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <p>Using this package requires 3 simple steps:</p>
-<ol style="list-style-type: decimal">
-<li>Setup the custom Pandoc arguments for your document output format in the YAML metadata.</li>
-</ol>
+<ol style="list-style-type: decimal"><li>Setup the custom Pandoc arguments for your document output format in the YAML metadata.</li></ol>
 <p><code>pandoc_args: !expr acronymsdown::add_filter()</code></p>
-<ol start="2" style="list-style-type: decimal">
-<li>Define your acronyms in the YAML metadata.</li>
-</ol>
+<ol start="2" style="list-style-type: decimal"><li>Define your acronyms in the YAML metadata.</li></ol>
 <div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1"></a><span class="pp">---</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="fu">acronyms</span><span class="kw">:</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="at">  </span><span class="fu">key</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="at">  </span><span class="fu">keys</span><span class="kw">:</span></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">shortname</span><span class="kw">:</span><span class="at"> Rmd</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="at">      </span><span class="fu">longname</span><span class="kw">:</span><span class="at"> RMarkdown</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">shortname</span><span class="kw">:</span><span class="at"> YAML</span></span>
 <span id="cb3-7"><a href="#cb3-7"></a><span class="at">      </span><span class="fu">longname</span><span class="kw">:</span><span class="at"> YAML Ain't Markup Language</span></span>
 <span id="cb3-8"><a href="#cb3-8"></a><span class="pp">---</span></span></code></pre></div>
-<ol start="3" style="list-style-type: decimal">
-<li>And finally, use your acronyms in your Rmd document with the <code>\acr{&lt;KEY&gt;}</code> special command!</li>
-</ol>
+<ol start="3" style="list-style-type: decimal"><li>And finally, use your acronyms in your Rmd document with the <code>\acr{&lt;KEY&gt;}</code> special command!</li></ol>
 <p><code>\acr{Rmd} can be used to write technical content. \acr{Rmd} uses \acr{YAML}.</code></p>
 <p>Please refer to the <a href="https://rchaput.github.io/acronymsdown/articles/acronymsdown.html">Get started</a> (<code><a href="articles/acronymsdown.html">vignette("acronymsdown")</a></code>) guide for more details.</p>
 </div>
@@ -234,7 +218,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>
