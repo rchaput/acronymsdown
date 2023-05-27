@@ -21,7 +21,7 @@ local current_dir = debug.getinfo(1).source:match("@?(.*/)")
 package.path = package.path .. ";" .. current_dir .. "/?.lua"
 
 -- The Acronyms database
-require("acronyms")
+local Acronyms = require("acronyms")
 
 -- Sorting function
 local sortAcronyms = require("sort_acronyms")

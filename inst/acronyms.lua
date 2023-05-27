@@ -76,6 +76,9 @@ Acronyms = {
     -- Each time a new acronym is defined, we increment this value to keep
     -- count of the order in which acronyms are defined.
     current_definition_order = 0,
+
+    -- Access to the `Acronym` class, if necessary.
+    Acronym = Acronym,
 }
 
 
@@ -176,3 +179,5 @@ function Acronyms:parseFromYamlFile(filepath, on_duplicate)
     -- Finally, read the metadata as usual.
     self:parseFromMetadata(metadata, on_duplicate)
 end
+
+return Acronyms
