@@ -227,6 +227,25 @@ details, in particular
 <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/pandoc_options.html" class="external-link">?rmarkdown::pandoc_options</a></code>.</p>
 </div>
 <div class="section level2">
+<h2 id="using-acronymsdown-with-quarto">Using acronymsdown with Quarto<a class="anchor" aria-label="anchor" href="#using-acronymsdown-with-quarto"></a>
+</h2>
+<p>A specific <a href="https://github.com/rchaput/acronyms" class="external-link">Quarto
+extension</a> has been developed for Quarto users. It contains all the
+features of <strong>Acronymsdown</strong>, with an even easier
+usage!</p>
+<p>Simply type the following command in your terminal to install the
+<strong>acronyms</strong> Quarto extension:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> add rchaput/acronyms</span></code></pre></div>
+<p>Then, load the filter in your document metadata with:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filters</span><span class="kw">:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> acronyms</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+<p>and start using acronyms in your document!</p>
+<p>Please refer to the <a href="https://rchaput.github.io/acronyms" class="external-link">documentation</a> for detailed
+instructions.</p>
+</div>
+<div class="section level2">
 <h2 id="using-acronymsdown-with-only-pandoc-without-rmarkdown">Using acronymsdown with only Pandoc / without RMarkdown<a class="anchor" aria-label="anchor" href="#using-acronymsdown-with-only-pandoc-without-rmarkdown"></a>
 </h2>
 <p><strong>acronymsdown</strong> is implemented using a Pandoc <a href="https://pandoc.org/lua-filters.html" class="external-link">Lua Filter</a>, whereas the R
@@ -263,7 +282,7 @@ step.</p></li>
 </li>
 <li><p>Execute Pandoc and pass the additional arguments to it:</p></li>
 </ol>
-<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> <span class="at">--lua-filter</span> /path/to/parse-acronyms.lua input.md</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> <span class="at">--lua-filter</span> /path/to/parse-acronyms.lua input.md</span></code></pre></div>
 <p>where <code>/path/to/parse-acronyms.lua</code> is the path to the
 <code>parse-acronyms.lua</code> file, according to your installation
 method, and <code>input.md</code> is the document you want to parse.</p>
