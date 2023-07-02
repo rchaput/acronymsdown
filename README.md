@@ -23,6 +23,14 @@ The package documentation can be found online at
 https://rchaput.github.io/acronymsdown, or directly in your R console using
 `vignette("acronymsdown")`.
 
+:sparkles: [Quarto](https://quarto.org/) users should use the new extension
+[acronyms](https://github.com/rchaput/acronyms) instead! :sparkles:
+It has the same features as **Acronymsdown**, but packaged as a Quarto extension
+for easier usage.
+In the future, new features will be implemented **acronyms**; some will be
+backported to **Acronymsdown**, but others (such as shortcodes) are too much
+tied to Quarto.
+
 ## Features
 
 - Tired of manually having to check whether the first occurrence of an

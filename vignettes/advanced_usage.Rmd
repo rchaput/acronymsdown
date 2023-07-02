@@ -167,6 +167,33 @@ Please refer to the `rmarkdown` documentation for more details, in
 particular `vignette("lua-filters", "rmarkdown")`, `?rmarkdown::output_format`,
 and `?rmarkdown::pandoc_options`.
 
+## Using acronymsdown with Quarto
+
+A specific [Quarto extension](https://github.com/rchaput/acronyms) has been
+developed for Quarto users. It contains all the features of **Acronymsdown**,
+with an even easier usage!
+
+Simply type the following command in your terminal to install the **acronyms**
+Quarto extension:
+
+```sh
+quarto add rchaput/acronyms
+```
+
+Then, load the filter in your document metadata with:
+
+```yaml
+---
+filters:
+  - acronyms
+---
+```
+
+and start using acronyms in your document!
+
+Please refer to the [documentation](https://rchaput.github.io/acronyms) for
+detailed instructions.
+
 ## Using acronymsdown with only Pandoc / without RMarkdown
 
 **acronymsdown** is implemented using a Pandoc [Lua Filter], whereas the R
